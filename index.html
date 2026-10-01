@@ -336,11 +336,6 @@ aside select{border-radius:9px;padding:9px 30px 9px 12px;font-size:14px}
 .toolbar .seg{height:38px;align-items:stretch}
 .toolbar .seg button{padding:0 13px}
 .btn{border-radius:9px;font-weight:500}
-#csv{height:38px;display:inline-flex;align-items:center;gap:8px;padding:0 15px;color:var(--accent);border-color:#bfdcd6}
-#csv::before{content:'';width:14px;height:14px;background:currentColor;
-  -webkit-mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'><path d='M7 1.5v7.5M3.8 6.2 7 9.4l3.2-3.2M2 12.5h10' fill='none' stroke='black' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/></svg>") center/contain no-repeat;
-          mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'><path d='M7 1.5v7.5M3.8 6.2 7 9.4l3.2-3.2M2 12.5h10' fill='none' stroke='black' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/></svg>") center/contain no-repeat}
-#csv:hover{background:var(--tint2);border-color:var(--accent)}
 
 /* área principal e listas */
 main{padding:22px 28px 64px}
@@ -482,7 +477,6 @@ main{padding:22px 28px 64px}
         <button data-o="fora">Fora do grupo</button>
         <button data-o="var">Quem cresceu</button>
       </span>
-      <button class="btn" id="csv">Baixar CSV</button>
     </div>
     <main>
       <p class="note" id="note"></p>
@@ -1149,7 +1143,6 @@ function boot(dados){
   $('railtog').addEventListener('click',function(){
     var ab=document.body.classList.toggle('filtros');
     this.setAttribute('aria-expanded',ab?'true':'false');});
-  $('csv').addEventListener('click',baixar);
   $('dwx').addEventListener('click',fechar);
   $('bd').addEventListener('click',fechar);
   document.addEventListener('keydown',function(e){if(e.key==='Escape')fechar();});
