@@ -103,6 +103,52 @@ aside select:hover{border-color:var(--ink3)}
   cursor:pointer;font-size:12px;color:var(--ink2)}
 .mini3 button:hover{border-color:var(--accent);color:var(--accent);background:var(--tint2)}
 .hintline{font-size:12px;color:var(--ink3);margin-top:8px;line-height:1.45}
+/* seletor de marcas: botão fechado, painel por linha ao abrir */
+.mpick{margin-bottom:18px}
+.mpick-btn{width:100%;display:flex;align-items:center;gap:8px;text-align:left;cursor:pointer;
+  padding:9px 12px;border:1px solid var(--line);border-radius:9px;background:var(--surf);font-size:14px;color:var(--ink)}
+.mpick-btn:hover{border-color:var(--ink3)}
+.mpick-btn[aria-expanded=true]{border-color:var(--accent);border-bottom-left-radius:0;border-bottom-right-radius:0}
+.mpick-lbl{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mpick-btn.has .mpick-lbl{color:var(--accent);font-weight:500}
+.mpick-n{flex:none;background:var(--accent);color:#fff;font-size:11px;font-weight:600;min-width:20px;height:20px;
+  border-radius:10px;display:inline-flex;align-items:center;justify-content:center;padding:0 6px}
+.mpick-chev{flex:none;width:11px;height:7px;background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='11' height='7' viewBox='0 0 11 7'><path d='M1 1l4.5 4.5L10 1' fill='none' stroke='%2387979f' stroke-width='1.6' stroke-linecap='round'/></svg>") no-repeat center;transition:transform .15s}
+.mpick-btn[aria-expanded=true] .mpick-chev{transform:rotate(180deg)}
+.mpick-pop{border:1px solid var(--accent);border-top:0;border-radius:0 0 9px 9px;background:var(--surf);padding:10px}
+.mpick-q{width:100%;padding:7px 10px 7px 30px;border:1px solid var(--line);border-radius:7px;background:var(--surf2);font-size:13px;color:var(--ink);
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='13' height='13' viewBox='0 0 24 24' fill='none' stroke='%2387979f' stroke-width='2.2' stroke-linecap='round'><circle cx='11' cy='11' r='7'/><path d='M20 20l-3.5-3.5'/></svg>");
+  background-repeat:no-repeat;background-position:10px center}
+.mpick-q:focus{outline:none;border-color:var(--accent);background-color:#fff}
+.mpick-sel{display:flex;flex-wrap:wrap;gap:5px;margin-top:9px}
+.mpick-sel button{border:0;border-radius:6px;background:var(--tint);color:var(--accent);font-size:12px;font-weight:500;
+  padding:3px 7px 3px 9px;cursor:pointer;display:inline-flex;align-items:center;gap:5px;max-width:100%}
+.mpick-sel button span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mpick-sel button i{font-style:normal;font-size:13px;line-height:1;opacity:.7}
+.mpick-sel button:hover{background:#d6e8e4}
+.mpick-sel button:hover i{opacity:1}
+.mpick-body{margin-top:10px}
+.mpick-grp{width:100%;display:flex;align-items:center;gap:8px;border:0;border-top:1px solid var(--line2);background:none;
+  padding:9px 2px;cursor:pointer;text-align:left;font-size:13px;font-weight:600;color:var(--ink)}
+.mpick-grp:first-child{border-top:0}
+.mpick-grp:hover{color:var(--accent)}
+.mpick-grp .gs{flex:1;font-weight:400;color:var(--ink3);font-size:12px}
+.mpick-grp .gn{flex:none;font-size:11px;font-weight:600;color:var(--accent);background:var(--tint);border-radius:9px;padding:1px 7px}
+.mpick-grp .mpick-chev{opacity:.8}
+.mpick-grp[aria-expanded=true] .mpick-chev{transform:rotate(180deg)}
+.mpick-list{max-height:320px;overflow:auto;padding:0 2px 2px}
+.mpick-list label{display:flex;gap:9px;align-items:center;padding:5px 0;font-size:13px;cursor:pointer;line-height:1.3;color:var(--ink2)}
+.mpick-list label:hover{color:var(--accent)}
+.mpick-list label.on{color:var(--ink);font-weight:500}
+.mpick-list label>span:first-of-type{min-width:0;overflow-wrap:break-word}
+.mpick-list input{accent-color:var(--accent);width:14px;height:14px;flex:none;margin:0}
+.mpick-list .vv{margin-left:auto;color:var(--ink3);font-size:11.5px;padding-left:8px;white-space:nowrap}
+.mpick-empty{padding:12px 2px;font-size:13px;color:var(--ink3)}
+.mpick-foot{display:flex;gap:5px;margin-top:10px;padding-top:10px;border-top:1px solid var(--line2)}
+.mpick-foot button{border:1px solid var(--line);background:var(--surf);border-radius:7px;padding:6px 8px;cursor:pointer;font-size:12px;font-weight:500;color:var(--ink2)}
+.mpick-foot button:hover{border-color:var(--accent);color:var(--accent);background:var(--tint2)}
+.mpick-foot .ok{margin-left:auto;background:var(--deep);border-color:var(--deep);color:#fff}
+.mpick-foot .ok:hover{background:var(--accent);border-color:var(--accent);color:#fff}
 .clear{width:100%;margin-top:26px;border:1px solid var(--line);background:var(--surf);border-radius:7px;
   padding:9px;cursor:pointer;color:var(--ink2)}
 .clear:hover{border-color:var(--ink3);color:var(--ink)}
@@ -443,6 +489,25 @@ main{padding:22px 28px 64px}
       <button data-l="1">Infinity</button>
     </div>
 
+    <h3>Marca</h3>
+    <div class="mpick" id="mpick">
+      <button type="button" class="mpick-btn" id="mpickBtn" aria-expanded="false">
+        <span class="mpick-lbl" id="mpickLbl">Todas as marcas</span>
+        <span class="mpick-n" id="mpickN" hidden></span>
+        <i class="mpick-chev"></i>
+      </button>
+      <div class="mpick-pop" id="mpickPop" hidden>
+        <input type="search" id="qmar" class="mpick-q" placeholder="Buscar marca" autocomplete="off">
+        <div class="mpick-sel" id="mpickSel" hidden></div>
+        <div class="mpick-body" id="fmar"></div>
+        <div class="mpick-foot">
+          <button type="button" data-mk="top5">5 maiores</button>
+          <button type="button" data-mk="none">Limpar</button>
+          <button type="button" class="ok" id="mpickOk">Concluir</button>
+        </div>
+      </div>
+    </div>
+
     <h3>Estado</h3>
     <div class="checks" id="fuf"></div>
 
@@ -473,8 +538,6 @@ main{padding:22px 28px 64px}
       <input type="search" id="q" placeholder="Buscar por farmácia, cidade, CNPJ ou nome do PV">
       <span class="seg" id="ord">
         <button data-o="c" class="on">Maiores</button>
-        <button data-o="grupo">Pelo grupo</button>
-        <button data-o="fora">Fora do grupo</button>
         <button data-o="var">Quem cresceu</button>
       </span>
     </div>
@@ -499,7 +562,19 @@ var GRUPO_PFX=['SANTA CRUZ','PANPHARMA','CIRURGICA ST'];
 var DIST_PFX=['PROFARMA','GENESIO','ANBFARMA','PHARMA LOG','SERVIMED','D. CENTER','DISTR ','MAFRA','DASSETTE'];
 var CLSNOME=['Grupo Santa Cruz','Distribuidora','Rede ou CD próprio'];
 var st={tab:'far',met:'rs',q:'',linha:'',uf:new Set(),setor:-1,
-        ord:'c',drill:-1,cli:-1,n:SHOW,uni:'dist',sel:new Set()};
+        ord:'c',drill:-1,cli:-1,n:SHOW,uni:'dist',sel:new Set(),marcas:new Set()};
+/* filtro de marca: Set vazio = todas. Combina com a Linha da lateral. */
+function filtroMarca(){
+  var lmk=(st.linha==='')?null:+st.linha,ms=st.marcas,usa=ms.size>0;
+  return function(m){return (lmk===null||D.marL[m]===lmk)&&(!usa||ms.has(m));};
+}
+function rotMarcas(){
+  if(!st.marcas.size)return '';
+  var ks=[];st.marcas.forEach(function(m){ks.push(m);});
+  ks.sort(function(a,b){return D.mar[a].localeCompare(D.mar[b],'pt-BR');});
+  if(ks.length<=2)return ks.map(function(m){return D.mar[m];}).join(' + ');
+  return ks.length+' marcas: '+ks.slice(0,2).map(function(m){return D.mar[m];}).join(', ')+' +'+(ks.length-2);
+}
 
 /* período do recorte: vem do nome dos arquivos (ex.: BASE_PROVEDORES_AGO_..., MDTR_..._AGOSTO_...);
    se nenhum nome trouxer o mês, usa o mês anterior ao de hoje. Dá para trocar na lateral. */
@@ -612,7 +687,7 @@ function compute(){
   var usa=st.sel.size>0&&st.sel.size<D.prov.length;
   var np=D.prov.length,ok=new Uint8Array(np);
   for(var z=0;z<np;z++)ok[z]=usa?(st.sel.has(z)?1:0):1;
-  var lmk=(st.linha==='')?null:+st.linha;
+  var lmk=(st.linha==='')?null:+st.linha,okM=filtroMarca(),nm=D.mar.length,marC=new Float64Array(nm);
   var ns=D.set.length;
   var setC=new Float64Array(ns),setA=new Float64Array(ns),setN=new Int32Array(ns);
   var lastSet=new Int32Array(ns);lastSet.fill(-1);
@@ -627,6 +702,8 @@ function compute(){
     var p=pi[k];if(!base[p])continue;
     var m=mr[k];if(lmk!==null&&D.marL[m]!==lmk)continue;
     var pv=pr[k],cv=fc[k],av=fa[k],cl=CLS[pv];
+    if(ok[pv])marC[m]+=cv;            /* total por marca no recorte, antes do filtro de marca (alimenta a lateral) */
+    if(!okM(m))continue;
     ytdC[p]+=cv;
     if(cl===0)grpC[p]+=cv;
     if(p!==lp||pv!==lr){
@@ -656,7 +733,7 @@ function compute(){
   else list.sort(function(a,b){return totC[b]-totC[a];});
   R={base:base,baseN:baseN,qSet:qSet,list:list,totC:totC,totA:totA,ytdC:ytdC,grpC:grpC,topP:topP,nProv:nProv,usa:usa,ok:ok,
      provC:provC,provA:provA,provN:provN,setC:setC,setA:setA,setN:setN,
-     totalC:totalC,totalA:totalA,grupoC:grupoC,distTot:distTot,ytdTot:ytdTot,topV:topV};
+     totalC:totalC,totalA:totalA,grupoC:grupoC,distTot:distTot,ytdTot:ytdTot,topV:topV,marC:marC};
 }
 
 /* ---------- farmácias ---------- */
@@ -673,7 +750,7 @@ function renderFar(){
   var L=R.list,ate=Math.min(st.n,L.length);
   $('note').innerHTML='<b>'+fmt(L.length)+'</b> farmácias · <b>'+rsK(R.totalC)+'</b> '+periodoTexto()+' ('+
     vr(R.totalC,R.totalA)+' contra o mesmo período de '+anoAnt()+')'+
-    ' · <span class="chip gray">'+rotulo()+'</span>'+chipPV();
+    ' · <span class="chip gray">'+rotulo()+'</span>'+(st.marcas.size?' · <span class="chip">só '+esc(rotMarcas())+'</span>':'')+chipPV();
   if(!L.length){
     var msg=R.baseN?
       fmt(R.baseN)+' farmácia'+(R.baseN>1?'s batem':' bate')+' com a busca, mas nenhuma compra pelos provedores marcados.<br>'+
@@ -692,9 +769,7 @@ function renderFar(){
        '<div class="v">'+celVal(R.totC[i],R.totA[i])+
        (tp>=0?'<div class="topp" title="Principal provedor da loja"><div class="tpn">'+esc(D.prov[tp])+'</div>'+
          '<div class="tpv">'+rsK(R.topV[i])+' · '+pct(tpart)+' da loja</div></div>':'')+
-       (st.ord==='fora'?'<div class="sm"><span class="chip out">'+rsK(fora)+' fora do grupo</span></div>'
-        :st.ord==='grupo'?'<div class="sm"><span class="chip">'+rsK(R.grpC[i])+' pelo grupo · '+pct(part)+'</span></div>'
-        :st.ord==='var'?'<div class="sm"><span class="chip'+(inc>=0?'':' out')+'">'+sinal(inc)+'</span></div>':'')+
+       (st.ord==='var'?'<div class="sm"><span class="chip'+(inc>=0?'':' out')+'">'+sinal(inc)+'</span></div>':'')+
        '</div></div>';
   }
   h+='</div>';
@@ -707,9 +782,9 @@ var PST=null;
 function outrosProv(i,tp){
   if(tp<0)return '<em>sem compra</em>';
   if(R.nProv[i]<=1)return '<em>compra só por este provedor</em>';
-  var lmk=(st.linha==='')?null:+st.linha,fc=st.met==='rs'?F.c:F.uc,v={},k;
+  var okM=filtroMarca(),fc=st.met==='rs'?F.c:F.uc,v={},k;
   for(k=PST[i];k<PST[i+1];k++){
-    if(lmk!==null&&D.marL[F.mr[k]]!==lmk)continue;
+    if(!okM(F.mr[k]))continue;
     var p=F.pr[k];if(p===tp)continue;v[p]=(v[p]||0)+fc[k];}
   var ks=Object.keys(v).map(Number).sort(function(a,b){return v[b]-v[a];});
   var mostra=ks.slice(0,2).map(function(p){return esc(D.prov[p]);}).join(', ');
@@ -739,12 +814,12 @@ function renderProv(){
 function abrirProv(p){st.drill=p;st.cli=-1;st.n=SHOW;renderProv();}
 function voltar(){st.drill=-1;st.cli=-1;st.n=SHOW;renderProv();}
 function dadosDrill(p){
-  var cli={},mar={},tc=0,ta=0,lmk=(st.linha==='')?null:+st.linha;
+  var cli={},mar={},tc=0,ta=0,okM=filtroMarca();
   var pi=F.pi,pr=F.pr,mr=F.mr,fa=st.met==='rs'?F.a:F.ua,fc=st.met==='rs'?F.c:F.uc;
   for(var k=0;k<NF;k++){
     if(pr[k]!==p)continue;
     var i=pi[k];if(!R.base[i])continue;
-    if(lmk!==null&&D.marL[mr[k]]!==lmk)continue;
+    if(!okM(mr[k]))continue;
     var c=fc[k];
     if(!cli[i])cli[i]={c:0,a:0,m:{}};
     cli[i].c+=c;cli[i].a+=fa[k];
@@ -831,11 +906,11 @@ function abrirPdv(i){
   var pi=F.pi,pr=F.pr,mr=F.mr;
   /* a ficha segue o filtro de Linha da lateral, igual a lista: com Prime marcado, so entram
      as marcas Prime (antes a ficha somava as duas linhas mesmo com o filtro ligado) */
-  var lmk=(st.linha==='')?null:+st.linha;
+  var lmk=(st.linha==='')?null:+st.linha,okM=filtroMarca();
   for(var k=0;k<NF;k++){
     if(pi[k]!==i)continue;
     var p=pr[k],m=mr[k];
-    if(lmk!==null&&D.marL[m]!==lmk)continue;
+    if(!okM(m))continue;
     var e=acc(provs,p);e.c+=F.c[k];e.a+=F.a[k];e.uc+=F.uc[k];e.ua+=F.ua[k];
     var g=acc(marsAll,m);g.c+=F.c[k];g.a+=F.a[k];g.uc+=F.uc[k];g.ua+=F.ua[k];
     if(!marsBy[p])marsBy[p]={};
@@ -845,7 +920,8 @@ function abrirPdv(i){
   var r=D.pdv[i];
   $('dwh').innerHTML='<div><h2>'+esc(r[0])+'</h2><div style="color:var(--ink2);font-size:13.5px;margin-top:3px">'+
     esc(r[1]?r[1]+' · ':'')+esc(D.cid[r[2]])+' / '+D.uf[r[3]]+' · '+esc(D.band[r[4]])+
-    (lmk!==null?' <span class="chip">só linha '+(lmk?'Infinity':'Prime')+'</span>':'')+'</div>'+
+    (lmk!==null?' <span class="chip">só linha '+(lmk?'Infinity':'Prime')+'</span>':'')+
+    (st.marcas.size?' <span class="chip">só '+esc(rotMarcas())+'</span>':'')+'</div>'+
     '<div class="cnpj"><span>'+(/^\d{14}$/.test(r[7])?'CNPJ ':'Código ')+esc(cnpjFmt(r[7]))+'</span>'+
     '<button onclick="copiar(\''+esc(r[7])+'\',this)">copiar</button></div></div>';
   renderFicha();
@@ -1002,12 +1078,61 @@ function drawProv(){
     'Contando os '+U.length+' provedores acima.':
     'Contando só os '+st.sel.size+' marcados.';
 }
+/* marcas na lateral: botão fechado com o resumo; ao abrir, lista única em ordem alfabética.
+   Segue o filtro de Linha (com Prime ou Infinity marcado, mostra só as marcas daquela linha). */
+function drawMar(){
+  var lmk=(st.linha==='')?null:+st.linha,q=($('qmar').value||'').trim().toUpperCase(),L=[],i;
+  for(i=0;i<D.mar.length;i++){
+    if(lmk!==null&&D.marL[i]!==lmk)continue;
+    if(q&&D.mar[i].toUpperCase().indexOf(q)<0)continue;
+    L.push(i);
+  }
+  L.sort(function(a,b){return D.mar[a].localeCompare(D.mar[b],'pt-BR');});
+  /* botão fechado */
+  var n=st.marcas.size;
+  $('mpickLbl').textContent=n?rotMarcas():'Todas as marcas';
+  $('mpickN').hidden=!n;$('mpickN').textContent=n;
+  $('mpickBtn').classList.toggle('has',n>0);
+  /* chips das marcadas */
+  var ks=[];st.marcas.forEach(function(m){ks.push(m);});
+  ks.sort(function(a,b){return D.mar[a].localeCompare(D.mar[b],'pt-BR');});
+  $('mpickSel').hidden=!n;
+  $('mpickSel').innerHTML=ks.map(function(m){
+    return '<button type="button" data-rm="'+m+'" title="Tirar '+esc(D.mar[m])+'"><span>'+esc(D.mar[m])+'</span><i>×</i></button>';}).join('');
+  /* lista */
+  var h='';
+  L.forEach(function(m){
+    h+='<label'+(st.marcas.has(m)?' class="on"':'')+'><input type="checkbox" value="'+m+'"'+(st.marcas.has(m)?' checked':'')+'>'+
+       '<span>'+esc(D.mar[m])+'</span><span class="vv">'+rsK(R.marC[m])+'</span></label>';
+  });
+  $('fmar').innerHTML=L.length?'<div class="mpick-list">'+h+'</div>':'<div class="mpick-empty">Nenhuma marca com esse nome.</div>';
+}
+function mpickToggle(force){
+  var ab=typeof force==='boolean'?force:$('mpickPop').hidden;
+  $('mpickPop').hidden=!ab;$('mpickBtn').setAttribute('aria-expanded',ab?'true':'false');
+  if(ab){drawMar();setTimeout(function(){$('qmar').focus();},0);}
+}
+function presetMar(kind){
+  st.marcas.clear();
+  if(kind==='top5'){
+    var lmk=(st.linha==='')?null:+st.linha,ks=[];
+    for(var i=0;i<D.mar.length;i++)if((lmk===null||D.marL[i]===lmk)&&R.marC[i])ks.push(i);
+    ks.sort(function(a,b){return R.marC[b]-R.marC[a];});
+    ks.slice(0,5).forEach(function(m){st.marcas.add(m);});
+  }
+  $('qmar').value='';aplicarMarcas();
+}
+/* reaplica tudo depois de mexer nas marcas */
+function aplicarMarcas(){
+  st.n=SHOW;st.drill=-1;render();drawProv();drawMar();
+  if(DW.i>=0&&$('dw').classList.contains('on')){var sc=$('dwb').scrollTop;abrirPdv(DW.i);$('dwb').scrollTop=sc;}
+}
 function preset(kind){
   var U=universo();
   st.sel.clear();
   if(kind==='all')U.forEach(function(p){st.sel.add(p);});
   if(kind==='grupo')U.forEach(function(p){if(CLS[p]===0)st.sel.add(p);});
-  st.n=SHOW;st.drill=-1;render();drawProv();
+  st.n=SHOW;st.drill=-1;render();drawProv();drawMar();
 }
 function setUni(u){
   st.uni=u;
@@ -1036,7 +1161,7 @@ function baixar(){
         Math.round(R.grpC[p]),Math.round(R.totC[p]-R.grpC[p]),
         R.topP[p]>=0?D.prov[R.topP[p]]:'',Math.round(R.topV[p]),
         (R.ytdC[p]?R.topV[p]/R.ytdC[p]:0).toFixed(4).replace('.',','),R.nProv[p]]);});
-    return csv(rows,'feira_farmacias_'+st.met+'.csv');
+    return csv(rows,'feira_farmacias_'+st.met+(st.marcas.size?'_marcas':'')+'.csv');
   }
   if(st.tab==='set'){
     rows=[['#','Setor','Codigo','Distrital','Linha','Compra '+rotPeriodo()+' ('+un()+')','Mesmo periodo '+anoAnt(),'Farmacias']];
@@ -1108,10 +1233,11 @@ function boot(dados){
   $('fsetor').addEventListener('change',function(){st.setor=this.value===''?-1:+this.value;st.n=SHOW;st.drill=-1;render();});
   $('met').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;
     st.met=b.dataset.m;st.n=SHOW;
-    [].forEach.call(this.children,function(x){x.classList.toggle('on',x===b);});render();drawProv();});
+    [].forEach.call(this.children,function(x){x.classList.toggle('on',x===b);});render();drawProv();drawMar();});
   $('linha').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;
     st.linha=b.dataset.l;st.n=SHOW;st.drill=-1;
-    [].forEach.call(this.children,function(x){x.classList.toggle('on',x===b);});render();drawProv();
+    if(st.linha!==''){var lm=+st.linha,tira=[];st.marcas.forEach(function(m){if(D.marL[m]!==lm)tira.push(m);});tira.forEach(function(m){st.marcas.delete(m);});}
+    [].forEach.call(this.children,function(x){x.classList.toggle('on',x===b);});render();drawProv();drawMar();
     if(DW.i>=0&&$('dw').classList.contains('on')){var sc=$('dwb').scrollTop;abrirPdv(DW.i);$('dwb').scrollTop=sc;}});
   $('ord').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;
     st.ord=b.dataset.o;st.n=SHOW;
@@ -1120,11 +1246,28 @@ function boot(dados){
     st.tab=b.dataset.t;st.drill=-1;st.n=SHOW;
     [].forEach.call(this.children,function(x){x.classList.toggle('on',x===b);});
     $('ord').style.display=st.tab==='far'?'':'none';render();});
+  $('mpickBtn').addEventListener('click',function(){mpickToggle();});
+  $('mpickOk').addEventListener('click',function(){mpickToggle(false);});
+  $('fmar').addEventListener('change',function(e){
+    if(e.target.tagName!=='INPUT')return;
+    var v=+e.target.value;
+    if(e.target.checked)st.marcas.add(v);else st.marcas.delete(v);
+    aplicarMarcas();});
+  $('mpickSel').addEventListener('click',function(e){
+    var b=e.target.closest('button[data-rm]');if(!b)return;
+    st.marcas.delete(+b.dataset.rm);aplicarMarcas();});
+  var tm;
+  $('qmar').addEventListener('input',function(){clearTimeout(tm);tm=setTimeout(drawMar,150);});
+  $('mpickPop').addEventListener('click',function(e){var b=e.target.closest('button[data-mk]');if(b)presetMar(b.dataset.mk);});
+  document.addEventListener('click',function(e){
+    if($('mpickPop').hidden)return;
+    var path=e.composedPath?e.composedPath():[];
+    if(path.indexOf($('mpick'))<0&&!(e.target.closest&&e.target.closest('#mpick')))mpickToggle(false);});
   $('fprov').addEventListener('change',function(e){
     if(e.target.tagName!=='INPUT')return;
     var v=+e.target.value;
     if(e.target.checked)st.sel.add(v);else st.sel.delete(v);
-    st.n=SHOW;st.drill=-1;render();drawProv();});
+    st.n=SHOW;st.drill=-1;render();drawProv();drawMar();});
   document.querySelector('.mini3').addEventListener('click',function(e){
     var b=e.target.closest('button[data-p]');if(b)preset(b.dataset.p);});
   $('uni').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;
@@ -1132,6 +1275,7 @@ function boot(dados){
     setUni(b.dataset.u);});
   $('clear').addEventListener('click',function(){
     st.uf.clear();st.setor=-1;st.q='';st.linha='';st.ord='c';st.drill=-1;st.n=SHOW;st.uni='dist';st.met='rs';
+    st.marcas.clear();$('qmar').value='';mpickToggle(false);
     [].forEach.call($('met').children,function(x){x.classList.toggle('on',x.dataset.m==='rs');});
     [].forEach.call($('uni').children,function(x){x.classList.toggle('on',x.dataset.u==='dist');});
     st.sel.clear();universo().forEach(function(p){st.sel.add(p);});
@@ -1139,18 +1283,18 @@ function boot(dados){
     [].forEach.call($('fuf').querySelectorAll('input'),function(x){x.checked=false;});
     [].forEach.call($('linha').children,function(x){x.classList.toggle('on',x.dataset.l==='');});
     [].forEach.call($('ord').children,function(x){x.classList.toggle('on',x.dataset.o==='c');});
-    render();drawProv();});
+    render();drawProv();drawMar();});
   $('railtog').addEventListener('click',function(){
     var ab=document.body.classList.toggle('filtros');
     this.setAttribute('aria-expanded',ab?'true':'false');});
   $('dwx').addEventListener('click',fechar);
   $('bd').addEventListener('click',fechar);
-  document.addEventListener('keydown',function(e){if(e.key==='Escape')fechar();});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'){fechar();if(!$('mpickPop').hidden)mpickToggle(false);}});
 
   universo().forEach(function(p){st.sel.add(p);});
   document.body.classList.add('ready');
   $('boot').style.display='none';$('app').hidden=false;
-  render();drawProv();
+  render();drawProv();drawMar();
 }
 window.abrirPdv=abrirPdv;window.abrirProv=abrirProv;window.selCli=selCli;window.selProv=selProv;window.copiar=copiar;window.verTudo=verTudo;window.ordFicha=ordFicha;window.voltar=voltar;window.mais=mais;window.mais2=mais2;window.verSetor=verSetor;
 
