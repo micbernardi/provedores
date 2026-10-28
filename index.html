@@ -203,6 +203,10 @@ aside select:hover{border-color:var(--ink3)}
 /* pastilhas: preenchida = medida, contornada = classificação */
 .chip{display:inline-block;background:#edf1f3;color:var(--ink2);border-radius:4px;padding:2px 7px;
   font-size:12.5px;white-space:nowrap}
+button.chip.cls{font:inherit;font-size:11.5px;cursor:pointer;line-height:1.35;vertical-align:1px}
+button.chip.cls i{font-style:normal;opacity:.45;margin-left:2px}
+button.chip.cls:hover{border-color:var(--accent);color:var(--accent)}
+button.chip.cls:hover i{opacity:1}
 .chip.out{background:var(--down-bg);color:#8a2e23}
 .chip.gray{background:none;border:1px solid var(--line);color:var(--ink3);padding:1px 6px;font-size:11.5px}
 .empty{padding:56px 20px;text-align:center;color:var(--ink3)}
@@ -622,7 +626,60 @@ body:not(.ready) .mast{padding-bottom:9px}
 'use strict';
 var D=null,F=null,NP=0,NF=0,CLS=null,R={},SHOW=60;
 var SETQ=null,PDVQ=null;
-var DIST_PFX=['SANTA CRUZ','PANPHARMA','CIRURGICA ST','PROFARMA','GENESIO','ANBFARMA','PHARMA LOG','SERVIMED','D. CENTER','DISTR ','MAFRA','DASSETTE'];
+/* ---------- distribuidora ou rede/CD próprio (vale para qualquer regional) ----------
+   1) nome de distribuidora conhecida no Brasil, ou palavra de atacado no nome -> distribuidora
+   2) nome de canal próprio de rede (CHAIN, COMMERCE...) -> rede
+   3) o nome do provedor bate com a bandeira que mais compra dele -> rede
+   4) 80% ou mais da venda vai para uma única bandeira de rede -> rede (CD próprio)
+   5) o resto: atende várias bandeiras/independentes -> distribuidora
+   A bandeira vem do MDTR; "I", "N/I" e independentes não contam como rede.
+   Dá para trocar a classificação clicando na etiqueta do provedor; a escolha fica guardada. */
+var DIST_NOMES=['SANTA CRUZ','PANPHARMA','CIRURGICA','PROFARMA','NAZARIA','SERVIMED','GENESIO','ANBFARMA',
+  'PHARMA LOG','PHARMALOG','D. CENTER','MAFRA','DASSETTE','DIMED','ATIVA ','SUDESTE FARMA','SAMED','DIFARMIG',
+  'SANTA LUCIA','DESTRO','ELFA','ONCOPROD','POLAR','PROSAUDE'];
+var DIST_RX=/\bDISTR|ATACAD|\bDIST\b|LOGISTIC/;
+var REDE_RX=/\bCHAIN\b|COMMERCE|E-COMM|\bECOMM/;
+var BAND_NULA=/^(I|N\/I|NI|-|INDEPENDENTES?|FARMACIAS? INDEPENDENTES?|SEM BANDEIRA)?$/;
+function palavras(t){return norm(t).replace(/[^a-z0-9 ]/g,' ').split(/\s+/).filter(function(w){
+  return w.length>=4&&['farmacia','farmacias','drogaria','drogarias','droga','rede','farma','pharma','popular','comercio','ltda'].indexOf(w)<0;});}
+function classeOverride(){try{return JSON.parse(localStorage.getItem('prov_classe')||'{}');}catch(e){return {};}}
+function classificarProvedores(){
+  var np=D.prov.length,by=[],tot=new Float64Array(np),k,p;
+  for(p=0;p<np;p++)by.push({});
+  for(k=0;k<NF;k++){p=F.pr[k];var b=D.band[D.pdv[F.pi[k]][4]]||'',v=F.c[k]+F.a[k];
+    by[p][b]=(by[p][b]||0)+v;tot[p]+=v;}
+  var ov=classeOverride(),out=new Int8Array(np),como=[];
+  for(p=0;p<np;p++){
+    var n=D.prov[p].toUpperCase(),c=0,why='';
+    if(ov[D.prov[p]]===1||ov[D.prov[p]]===2){c=ov[D.prov[p]];why='escolha sua';}
+    else if(pfx(n,DIST_NOMES)||DIST_NOMES.some(function(x){return n.indexOf(' '+x)>=0;})||DIST_RX.test(n)){c=1;why='nome de distribuidora';}
+    else if(REDE_RX.test(n)){c=2;why='canal próprio de rede';}
+    else if(/^(FARMACIAS?|FCIAS?\.?|DROGARIAS?|DROG\.|DROGA\b)/.test(n)){c=2;why='nome de farmácia: CD de rede';}
+    else{
+      var bs=Object.keys(by[p]).sort(function(a,b){return by[p][b]-by[p][a];}),top='',topV=0,nb=0;
+      bs.forEach(function(b){if(BAND_NULA.test(b.trim().toUpperCase()))return;nb++;if(!top){top=b;topV=by[p][b];}});
+      var pw=palavras(D.prov[p]),bw=top?palavras(top):[];
+      if(top&&pw.some(function(w){return bw.indexOf(w)>=0;})){c=2;why='nome igual ao da bandeira '+top;}
+      else if(top&&tot[p]&&topV/tot[p]>=.8){c=2;why=Math.round(topV/tot[p]*100)+'% da venda para '+top;}
+      else{c=1;why='atende várias bandeiras';}
+    }
+    out[p]=c;como.push(why);
+  }
+  CLS=out;CLS_COMO=como;PROV_TOT=tot;
+}
+var CLS_COMO=[],PROV_TOT=null;
+function trocarClasse(p,ev){
+  if(ev)ev.stopPropagation();
+  var ov=classeOverride(),nova=CLS[p]===2?1:2;
+  ov[D.prov[p]]=nova;try{localStorage.setItem('prov_classe',JSON.stringify(ov));}catch(e){}
+  CLS[p]=nova;CLS_COMO[p]='escolha sua';
+  if(st.uni==='dist'){if(nova===1)st.sel.add(p);else st.sel.delete(p);}
+  render();drawProv();
+}
+function chipClasse(p){
+  return '<button type="button" class="chip gray cls" title="'+esc(CLS_COMO[p]||'')+'. Clique para trocar." onclick="trocarClasse('+p+',event)">'+
+    CLSNOME[CLS[p]]+' <i>⇄</i></button>';
+}
 /* classe 1 = distribuidora, 2 = rede ou CD próprio (a 0 não é mais usada) */
 var CLSNOME=['Distribuidora','Distribuidora','Rede ou CD próprio'];
 var st={tab:'far',met:'rs',q:'',linha:'',uf:new Set(),setor:-1,dist:-1,
@@ -933,7 +990,7 @@ function renderProv(){
   var h='<div class="list">'+cabPer(null,'Provedor');
   idx.forEach(function(p,x){
     h+='<div class="row" onclick="abrirProv('+p+')"><div class="n">'+(x+1)+'</div><div class="main">'+
-       '<div class="t">'+esc(D.prov[p])+' <span class="chip gray">'+CLSNOME[CLS[p]]+'</span></div>'+
+       '<div class="t">'+esc(D.prov[p])+' '+chipClasse(p)+'</div>'+
        '<div class="s">'+fmt(R.provN[p])+' farmácias · '+pct(R.ytdTot?R.provC[p]/R.ytdTot:0)+' do recorte</div></div>'+
        '<div class="v">'+celVal(R.provC[p],R.provA[p])+'</div>'+celGap(R.provC[p],R.provA[p],R.provC2[p],R.provA2[p])+'</div>';
   });
@@ -967,7 +1024,7 @@ function renderDrill(){
   $('note').innerHTML='';
   var h='<button class="back" onclick="voltar()">← Todos os provedores</button>'+
     '<h2 class="hd">'+esc(D.prov[p])+'</h2>'+
-    '<div class="hdsub"><span class="chip gray">'+CLSNOME[CLS[p]]+'</span> &nbsp; '+
+    '<div class="hdsub">'+chipClasse(p)+' &nbsp; '+
     rs(d.tc)+' '+periodoTexto()+' ('+vr(d.tc,d.ta)+') · '+fmt(keys.length)+' farmácias compram por aqui</div>'+
     '<div class="split"><div><div class="cap">'+(st.ord==='var'?'Clientes com maior gap positivo':st.ord==='perda'?'Clientes com maior gap negativo':'Maiores clientes')+'</div><div class="list">'+cabPer(null,'Farmácia');
   var ate=Math.min(st.n,keys.length);
@@ -1208,9 +1265,13 @@ function drawProv(){
     });
   });
   $('fprov').innerHTML=h;
-  $('uniHint').textContent=st.uni==='dist'?
-    'Fora da conta: São João, Panvel, Raia, Clamed, Nissei e os demais CDs de rede.':
-    'Inclui os CDs próprios das redes.';
+  /* exemplos tirados da própria base, não de uma lista fixa de redes */
+  var redes=[];for(i=0;i<D.prov.length;i++)if(CLS[i]===2)redes.push(i);
+  redes.sort(function(a,b){return PROV_TOT[b]-PROV_TOT[a];});
+  var ex=redes.slice(0,4).map(function(p){return D.prov[p];});
+  $('uniHint').textContent=!redes.length?'Nenhum CD de rede identificado nesta base.':
+    st.uni==='dist'?'Fora da conta: '+ex.join(', ')+(redes.length>4?' e mais '+(redes.length-4)+' CDs de rede.':'.'):
+    'Inclui os '+redes.length+' CDs próprios de rede ('+ex.slice(0,2).join(', ')+'…).';
   $('provHint').textContent=st.sel.size===U.length?
     'Contando os '+U.length+' provedores acima.':
     'Contando só os '+st.sel.size+' marcados.';
@@ -1356,9 +1417,7 @@ function boot(dados){
   $('perHint').textContent='Os números já vêm somados do BI; isto só ajusta o nome do período nos títulos.';
   $('fper').addEventListener('change',function(){MES_FIM=+this.value;atualizarSub();render();
     if(DW.i>=0&&$('dw').classList.contains('on'))renderFicha();});
-  CLS=new Int8Array(D.prov.length);
-  for(var i=0;i<D.prov.length;i++){var n=D.prov[i];
-    CLS[i]=(pfx(n,DIST_PFX)||D.provB[i]>=10)?1:2;}
+  classificarProvedores();
   checkbox($('fuf'),D.uf.map(function(u,ix){return {v:ix,l:u};}),st.uf);
   var ds=D.dist.map(function(d,ix){return {v:ix,l:d.slice(0,6)+' · '+d.slice(9).trim()};});
   ds.sort(function(a,b){return a.l<b.l?-1:1;});
@@ -1438,7 +1497,7 @@ function boot(dados){
   $('boot').style.display='none';$('app').hidden=false;
   render();drawProv();drawMar();
 }
-window.abrirPdv=abrirPdv;window.abrirProv=abrirProv;window.selCli=selCli;window.selProv=selProv;window.copiar=copiar;window.verTudo=verTudo;window.ordFicha=ordFicha;window.voltar=voltar;window.mais=mais;window.mais2=mais2;window.verSetor=verSetor;
+window.trocarClasse=trocarClasse;window.abrirPdv=abrirPdv;window.abrirProv=abrirProv;window.selCli=selCli;window.selProv=selProv;window.copiar=copiar;window.verTudo=verTudo;window.ordFicha=ordFicha;window.voltar=voltar;window.mais=mais;window.mais2=mais2;window.verSetor=verSetor;
 
 
 
