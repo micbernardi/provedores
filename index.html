@@ -195,7 +195,7 @@ aside select:hover{border-color:var(--ink3)}
   padding:4px 8px 4px;text-align:right;line-height:1.3}
 .topp .tpn{font-size:12.5px;font-weight:600;color:var(--accent);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
 .topp .tpv{font-family:var(--mono);font-size:11.5px;color:var(--ink2);letter-spacing:-.02em;white-space:nowrap}
-/* participação do grupo na compra da loja */
+/* participação do principal provedor na compra da loja */
 .shr{height:3px;background:var(--line2);border-radius:2px;margin-top:8px;overflow:hidden}
 .shr>i{display:block;height:100%;width:var(--w);background:var(--accent);border-radius:2px}
 .up{color:var(--up)}
@@ -226,7 +226,7 @@ aside select:hover{border-color:var(--ink3)}
 /* ============ ficha da farmácia (gaveta) ============ */
 .bd{position:fixed;inset:0;background:rgba(7,36,44,.42);z-index:55;opacity:0;pointer-events:none;transition:opacity .2s}
 .bd.on{opacity:1;pointer-events:auto}
-.drawer{position:fixed;top:0;right:0;height:100%;width:min(620px,100%);background:var(--surf);
+.drawer{position:fixed;top:0;right:0;height:100%;width:min(720px,100%);background:var(--surf);
   box-shadow:-16px 0 48px rgba(7,36,44,.2);transform:translateX(103%);transition:transform .22s cubic-bezier(.2,.7,.3,1);
   z-index:60;display:flex;flex-direction:column}
 .drawer.on{transform:none}
@@ -262,7 +262,11 @@ aside select:hover{border-color:var(--ink3)}
 .mbox{margin:2px 0 12px;padding:10px 12px 6px;background:var(--surf2);border:1px solid var(--line);
   border-left:2px solid var(--accent);border-radius:0 7px 7px 0}
 .mhead,.mrow{display:grid;grid-template-columns:1fr 138px 112px;gap:8px;align-items:baseline}
-.mbox .mhead,.mbox .mrow{grid-template-columns:1fr 126px 104px}
+.mbox .mhead,.mbox .mrow{grid-template-columns:minmax(0,1fr) 124px 92px 90px 76px;gap:12px}
+.mrow .gp{font-family:var(--mono);font-variant-numeric:tabular-nums;letter-spacing:-.01em;text-align:right;white-space:nowrap;font-size:13px;font-weight:600;color:var(--ink3)}
+.mrow .gp.pos{color:var(--up)}.mrow .gp.neg{color:var(--down)}
+.mbox .mrow>span:first-child{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mbox .mrow .r{grid-template-columns:1fr 40px;gap:4px}
 .mhead{font-size:11.5px;font-weight:600;color:var(--ink3);padding:0 0 7px;border-bottom:1px solid var(--line)}
 .mhead button{border:0;background:none;cursor:pointer;color:inherit;font:inherit;text-align:right;padding:0}
 .mhead button:hover{color:var(--ink2)}
@@ -411,10 +415,67 @@ main{padding:22px 28px 64px}
 .slot{border-radius:10px}
 .drop .acts button{border-radius:9px;padding:10px 18px}
 
+/* cabeçalho compacto: uma faixa só, título e abas na mesma linha */
+header{padding:0 24px}
+.mast{padding:9px 0 0;gap:11px}
+.mark{width:26px;height:26px;border-radius:7px}
+.mark svg{width:14px;height:14px}
+header h1{font-size:15px}
+header .sub{font-size:11.5px;margin-top:0}
+#reload{padding:5px 11px;font-size:12px}
+.tabs{margin-top:4px;margin-left:0;gap:2px}
+body:not(.ready) .mast{padding-bottom:9px}
+.tabs button{padding:7px 12px 8px;font-size:13.5px}
+
+/* controle de ordenação */
+:root{--gapw:168px}
+.ordctl{display:flex;align-items:stretch;gap:3px;height:40px;padding:3px;border-radius:10px;background:#e6ecee;flex:none}
+.ordctl .olbl{align-self:center;font-size:11.5px;font-weight:500;color:var(--ink3);padding:0 9px 0 8px;letter-spacing:.01em;white-space:nowrap}
+.ordctl button{display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:1px;min-width:118px;
+  padding:0 12px;border:0;border-radius:8px;background:none;color:var(--ink2);cursor:pointer;text-align:left;line-height:1.15;
+  transition:background-color .12s,color .12s,box-shadow .12s}
+.ordctl button:hover{background:rgba(255,255,255,.55);color:var(--ink)}
+.ordctl button.on{background:#fff;color:var(--deep);box-shadow:0 1px 2px rgba(7,36,44,.14),0 0 0 1px rgba(7,36,44,.05)}
+.ordctl .omain{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;white-space:nowrap}
+.ordctl .osub{font-size:10.5px;font-weight:500;color:var(--ink3);white-space:nowrap}
+.ordctl button.on .osub{color:var(--accent)}
+.ordctl .arr{width:0;height:0;border-left:4px solid transparent;border-right:4px solid transparent;border-top:5px solid currentColor;opacity:.55;transition:transform .15s}
+.ordctl button.on .arr{opacity:1}
+.ordctl button.asc .arr{transform:rotate(180deg)}
+.ordctl button.asc.on{color:var(--down)}
+.ordctl button.asc.on .osub{color:var(--down)}
+.ordctl button:not(.asc).on{color:var(--up)}
+
+/* coluna de gap nas listas */
+.lhead .g,.row .g{width:var(--gapw);flex:none;border-left:1px solid var(--line2);padding-left:16px;text-align:right;
+  font-family:var(--mono);font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.lhead .g{border-left-color:var(--line);display:flex;flex-direction:column;align-items:flex-end;justify-content:center;gap:2px}
+.lhead .g .num,.lhead .g .gu{font-size:11.5px;letter-spacing:-.02em;text-align:right}
+.lhead .g .gu{color:var(--ink3);font-size:10.5px}
+.row .g .gv{font-weight:600;font-size:15px;padding-top:2px}
+.row .g .gu{font-size:11.5px;color:var(--ink3);margin-top:4px}
+.row .g.pos .gv{color:var(--up)}
+.row .g.neg .gv{color:var(--down)}
+.row .g.zero .gv{color:var(--ink3);font-weight:500}
+/* na tela do provedor a lista divide espaço com a coluna de marcas: colunas mais estreitas */
+.split .lhead .v,.split .row .v{width:168px;padding-left:12px}
+.split .lhead .g,.split .row .g{width:126px;padding-left:12px}
+.split .row .g .gv{font-size:14px}
+
 @media(max-width:900px){
   header{padding:0 16px}.tabs{margin-left:0}
   .toolbar{padding:10px 16px}main{padding:16px 16px 60px}
   .row{padding:13px 14px}
+  :root{--gapw:122px}
+  .lhead .g,.row .g{padding-left:12px}
+  .row .g .gv{font-size:13.5px}
+  .ordctl .olbl{display:none}
+  .ordctl button{min-width:0;padding:0 10px}
+}
+@media(max-width:560px){
+  :root{--gapw:96px}
+  .lhead .g,.row .g{padding-left:8px}
+  .row .g .gu{display:none}
 }
 </style>
 </head>
@@ -477,7 +538,7 @@ main{padding:22px 28px 64px}
     </div>
 
     <div id="perBox" hidden>
-    <h3>Período</h3>
+    <h3>Até que mês vão os dados</h3>
     <select id="fper"></select>
     <div class="hintline" id="perHint"></div>
     </div>
@@ -511,6 +572,9 @@ main{padding:22px 28px 64px}
     <h3>Estado</h3>
     <div class="checks" id="fuf"></div>
 
+    <h3>Distrital</h3>
+    <select id="fdist"><option value="">Todas as distritais</option></select>
+
     <h3>Setor</h3>
     <select id="fsetor"><option value="">Todos os setores</option></select>
 
@@ -524,7 +588,6 @@ main{padding:22px 28px 64px}
     <h3>Provedores</h3>
     <div class="mini3">
       <button data-p="all">Todos</button>
-      <button data-p="grupo">Só o grupo</button>
       <button data-p="none">Limpar</button>
     </div>
     <div class="checks" id="fprov"></div>
@@ -536,10 +599,11 @@ main{padding:22px 28px 64px}
   <div class="col">
     <div class="toolbar">
       <input type="search" id="q" placeholder="Buscar por farmácia, cidade, CNPJ ou nome do PV">
-      <span class="seg" id="ord">
-        <button data-o="c" class="on">Maiores</button>
-        <button data-o="var">Quem cresceu</button>
-      </span>
+      <div class="ordctl" id="ord" role="group" aria-label="Ordenar">
+        <span class="olbl">Ordenar por</span>
+        <button type="button" data-o="c" class="on"><span class="omain">Compra</span><span class="osub">maiores primeiro</span></button>
+        <button type="button" data-o="gap" id="ordGap"><span class="omain">Gap<i class="arr" aria-hidden="true"></i></span><span class="osub">maiores ganhos</span></button>
+      </div>
     </div>
     <main>
       <p class="note" id="note"></p>
@@ -558,15 +622,34 @@ main{padding:22px 28px 64px}
 'use strict';
 var D=null,F=null,NP=0,NF=0,CLS=null,R={},SHOW=60;
 var SETQ=null,PDVQ=null;
-var GRUPO_PFX=['SANTA CRUZ','PANPHARMA','CIRURGICA ST'];
-var DIST_PFX=['PROFARMA','GENESIO','ANBFARMA','PHARMA LOG','SERVIMED','D. CENTER','DISTR ','MAFRA','DASSETTE'];
-var CLSNOME=['Grupo Santa Cruz','Distribuidora','Rede ou CD próprio'];
-var st={tab:'far',met:'rs',q:'',linha:'',uf:new Set(),setor:-1,
+var DIST_PFX=['SANTA CRUZ','PANPHARMA','CIRURGICA ST','PROFARMA','GENESIO','ANBFARMA','PHARMA LOG','SERVIMED','D. CENTER','DISTR ','MAFRA','DASSETTE'];
+/* classe 1 = distribuidora, 2 = rede ou CD próprio (a 0 não é mais usada) */
+var CLSNOME=['Distribuidora','Distribuidora','Rede ou CD próprio'];
+var st={tab:'far',met:'rs',q:'',linha:'',uf:new Set(),setor:-1,dist:-1,
         ord:'c',drill:-1,cli:-1,n:SHOW,uni:'dist',sel:new Set(),marcas:new Set()};
 /* filtro de marca: Set vazio = todas. Combina com a Linha da lateral. */
 function filtroMarca(){
   var lmk=(st.linha==='')?null:+st.linha,ms=st.marcas,usa=ms.size>0;
   return function(m){return (lmk===null||D.marL[m]===lmk)&&(!usa||ms.has(m));};
+}
+/* com distrital ou setor escolhido, só conta a venda creditada a eles: cada venda vai para o
+   setor da linha da marca naquele PDV (Prime ou Infinity). Uma farmácia atendida por duas
+   distritais entra só com as marcas da distrital escolhida. null = sem filtro */
+function filtroVenda(){
+  var sd=st.dist,ss=st.setor;
+  if(sd<0&&ss<0)return null;
+  return function(p,m){
+    var s=D.pdv[p][D.marL[m]?6:5];
+    if(s<0)return false;
+    if(ss>=0&&s!==ss)return false;
+    if(sd>=0&&D.setM[s][0]!==sd)return false;
+    return true;
+  };
+}
+function rotRecorte(){
+  if(st.setor>=0)return ' · <span class="chip">só a venda de '+esc(cod(st.setor)+' '+pessoa(st.setor))+'</span>';
+  if(st.dist>=0)return ' · <span class="chip">só a venda da distrital '+esc(D.dist[st.dist].slice(0,6))+'</span>';
+  return '';
 }
 function rotMarcas(){
   if(!st.marcas.size)return '';
@@ -578,18 +661,22 @@ function rotMarcas(){
 
 /* período do recorte: vem do nome dos arquivos (ex.: BASE_PROVEDORES_AGO_..., MDTR_..._AGOSTO_...);
    se nenhum nome trouxer o mês, usa o mês anterior ao de hoje. Dá para trocar na lateral. */
-var MES_FIM=7, ANO_FIM=26, PER_ORIGEM='';
+var MES_FIM=7, ANO_FIM=26, PER_ORIGEM='', PER_EXT=false;
 var MES_TOK={JAN:1,JANEIRO:1,FEV:2,FEVEREIRO:2,FEB:2,MAR:3,MARCO:3,ABR:4,ABRIL:4,APR:4,MAI:5,MAIO:5,MAY:5,
   JUN:6,JUNHO:6,JUL:7,JULHO:7,AGO:8,AGOSTO:8,AUG:8,SET:9,SETEMBRO:9,SEP:9,OUT:10,OUTUBRO:10,OCT:10,
   NOV:11,NOVEMBRO:11,DEZ:12,DEZEMBRO:12,DEC:12};
 function detectarPeriodo(nomes){
   /* o mês final vem SEMPRE do nome do arquivo; só sem nada no nome é que vale o seletor de período */
-  var hoje=new Date(),mes=0,ano=0,de='';
+  var hoje=new Date(),mes=0,ano=0,de='',ext=null;
   var RX_MES=/^(JANEIRO|FEVEREIRO|MARCO|ABRIL|MAIO|JUNHO|JULHO|AGOSTO|SETEMBRO|OUTUBRO|NOVEMBRO|DEZEMBRO|JAN|FEV|FEB|MAR|ABR|APR|MAI|MAY|JUN|JUL|AGO|AUG|SET|SEP|OUT|OCT|NOV|DEZ|DEC)(\d{2}|\d{4})?$/;
   var RX_FIM=/(JANEIRO|FEVEREIRO|MARCO|ABRIL|MAIO|JUNHO|JULHO|AGOSTO|SETEMBRO|OUTUBRO|NOVEMBRO|DEZEMBRO|JAN|FEV|FEB|MAR|ABR|APR|MAI|MAY|JUN|JUL|AGO|AUG|SET|SEP|OUT|OCT|NOV|DEZ|DEC)(\d{2}|\d{4})$/;
   function mm(x){x=+x;return x>=1&&x<=12?x:0;}
   nomes.forEach(function(nome){
     if(!nome||mes)return;
+    /* "..._-_2026-10-28T141357_876.xlsx" é a hora da extração, não o mês dos dados */
+    var xs=/(20[2-4]\d)-(\d{2})-(\d{2})T\d{4,6}/.exec(nome);
+    if(xs&&!ext)ext={m:+xs[2],a:+xs[1]%100};
+    nome=String(nome).replace(/20[2-4]\d-\d{2}-\d{2}T\d+(_\d+)?/g,' ');
     var tk=String(nome).replace(/\.[^.]+$/,'').normalize('NFD').replace(/[\u0300-\u036f]/g,'')
       .toUpperCase().split(/[^A-Z0-9]+/).filter(Boolean);
     var i,m;
@@ -607,6 +694,8 @@ function detectarPeriodo(nomes){
     }
     if(mes){de=nome;if(!ano)for(var j=0;j<tk.length;j++)if(/^20[2-4]\d$/.test(tk[j])){ano=+tk[j]%100;break;}}
   });
+  PER_EXT=false;
+  if(!mes&&ext){mes=ext.m-1||12;ano=ext.m===1?ext.a-1:ext.a;de='';PER_EXT=true;}
   if(!mes){mes=hoje.getMonth()||12;de='';}
   if(!ano){ano=hoje.getFullYear()%100;if(mes>hoje.getMonth()+1)ano--;}
   return {m:mes,a:ano,de:de};
@@ -619,7 +708,8 @@ function anoAnt(){return 2000+ANO_FIM-1;}
 function cabPer(t,left){return '<div class="lhead"><div class="n">#</div>'+
   '<div class="main">'+(left||'')+'</div>'+
   '<div class="v"><span class="num">'+(t||rotPeriodo())+'</span>'+
-  '<span class="dlt">vs '+(ANO_FIM-1)+'</span></div></div>';}
+  '<span class="dlt">vs '+(ANO_FIM-1)+'</span></div>'+
+  '<div class="g"><span class="num">Gap vs '+(ANO_FIM-1)+'</span><span class="gu">'+(st.met==='rs'?'R$ · un':'un · R$')+'</span></div></div>';}
 
 function $(i){return document.getElementById(i);}
 var FAT=null;
@@ -629,7 +719,7 @@ function atualizarSub(){
   $('sub').textContent=FAT.pdv.toLocaleString('pt-BR')+' PDVs · '+FAT.prov+' provedores · '+
     'faturamento de R$ '+fmtK(FAT.c)+' '+periodoTexto()+'/'+(2000+ANO_FIM)+
     (v===null?'':' ('+(v>=0?'+':'−')+Math.abs(v)+'% vs '+anoAnt()+')')+
-    (PER_ORIGEM?'':' · mês não veio no nome do arquivo, confira o período ao lado');
+    (PER_ORIGEM||PER_EXT?'':' · mês não veio no nome do arquivo, ajuste o período ao lado');
 }
 
 function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
@@ -676,6 +766,7 @@ function compute(){
     var r=P[i];
     if(st.uf.size&&!st.uf.has(r[3]))continue;
     if(st.setor>=0&&r[5]!==st.setor&&r[6]!==st.setor)continue;
+    if(st.dist>=0&&distIdx(r[5])!==st.dist&&distIdx(r[6])!==st.dist)continue;
     if(ts.length){
       var achou=bate(PDVQ[i],ts);
       if(!achou&&qd.length>=3&&r[7].indexOf(qd)>=0)achou=true;
@@ -687,7 +778,7 @@ function compute(){
   var usa=st.sel.size>0&&st.sel.size<D.prov.length;
   var np=D.prov.length,ok=new Uint8Array(np);
   for(var z=0;z<np;z++)ok[z]=usa?(st.sel.has(z)?1:0):1;
-  var lmk=(st.linha==='')?null:+st.linha,okM=filtroMarca(),nm=D.mar.length,marC=new Float64Array(nm);
+  var lmk=(st.linha==='')?null:+st.linha,okM=filtroMarca(),fv=filtroVenda(),nm=D.mar.length,marC=new Float64Array(nm);
   var ns=D.set.length;
   var setC=new Float64Array(ns),setA=new Float64Array(ns),setN=new Int32Array(ns);
   var lastSet=new Int32Array(ns);lastSet.fill(-1);
@@ -697,10 +788,14 @@ function compute(){
   topP.fill(-1);
   var provC=new Float64Array(np),provA=new Float64Array(np),provN=new Int32Array(np);
   var pi=F.pi,pr=F.pr,mr=F.mr,fa=st.met==='rs'?F.a:F.ua,fc=st.met==='rs'?F.c:F.uc;
+  var fa2=st.met==='rs'?F.ua:F.a,fc2=st.met==='rs'?F.uc:F.c; /* a outra métrica, só para a coluna de gap */
+  var totC2=new Float64Array(n),totA2=new Float64Array(n),provC2=new Float64Array(np),provA2=new Float64Array(np),
+      setC2=new Float64Array(ns),setA2=new Float64Array(ns);
   var lp=-1,lr=-1,acc=0,grupoC=0,distTot=0,ytdTot=0;
   for(var k=0;k<NF;k++){
     var p=pi[k];if(!base[p])continue;
     var m=mr[k];if(lmk!==null&&D.marL[m]!==lmk)continue;
+    if(fv&&!fv(p,m))continue;
     var pv=pr[k],cv=fc[k],av=fa[k],cl=CLS[pv];
     if(ok[pv])marC[m]+=cv;            /* total por marca no recorte, antes do filtro de marca (alimenta a lateral) */
     if(!okM(m))continue;
@@ -715,9 +810,10 @@ function compute(){
     acc+=cv;
     if(ok[pv]){
       provC[pv]+=cv;provA[pv]+=av;totC[p]+=cv;totA[p]+=av;
+      var cv2=fc2[k],av2=fa2[k];provC2[pv]+=cv2;provA2[pv]+=av2;totC2[p]+=cv2;totA2[p]+=av2;
       ytdTot+=cv;if(cl===0)grupoC+=cv;else if(cl===1)distTot+=cv;
       var s1=D.pdv[p][D.marL[m]===0?5:6];
-      if(s1>=0){setC[s1]+=cv;setA[s1]+=av;if(lastSet[s1]!==p){lastSet[s1]=p;setN[s1]++;}}
+      if(s1>=0){setC[s1]+=cv;setA[s1]+=av;setC2[s1]+=cv2;setA2[s1]+=av2;if(lastSet[s1]!==p){lastSet[s1]=p;setN[s1]++;}}
     }
   }
   if(lp>=0&&acc>topV[lp]){topV[lp]=acc;topP[lp]=lr;}
@@ -729,10 +825,10 @@ function compute(){
   }
   if(st.ord==='grupo')list.sort(function(a,b){return grpC[b]-grpC[a];});
   else if(st.ord==='fora')list.sort(function(a,b){return (totC[b]-grpC[b])-(totC[a]-grpC[a]);});
-  else if(st.ord==='var')list.sort(function(a,b){return (totC[b]-totA[b])-(totC[a]-totA[a]);});
-  else list.sort(function(a,b){return totC[b]-totC[a];});
+  else list.sort(cmpOrd(function(i){return totC[i];},function(i){return totA[i];}));
   R={base:base,baseN:baseN,qSet:qSet,list:list,totC:totC,totA:totA,ytdC:ytdC,grpC:grpC,topP:topP,nProv:nProv,usa:usa,ok:ok,
      provC:provC,provA:provA,provN:provN,setC:setC,setA:setA,setN:setN,
+     totC2:totC2,totA2:totA2,provC2:provC2,provA2:provA2,setC2:setC2,setA2:setA2,
      totalC:totalC,totalA:totalA,grupoC:grupoC,distTot:distTot,ytdTot:ytdTot,topV:topV,marC:marC};
 }
 
@@ -745,12 +841,45 @@ function chipPV(){
   if(q.length>3)nomes+=' +'+(q.length-3);
   return ' · <span class="chip">PV: '+esc(nomes)+'</span>';
 }
+/* gap = compra no período menos o mesmo período do ano anterior.
+   'c' maiores compras · 'var' maior gap positivo · 'perda' maior gap negativo */
+function porGap(){return st.ord==='var'||st.ord==='perda';}
+function cmpOrd(cur,ant){
+  if(st.ord==='var')return function(a,b){return (cur(b)-ant(b))-(cur(a)-ant(a))||cur(b)-cur(a);};
+  if(st.ord==='perda')return function(a,b){return (cur(a)-ant(a))-(cur(b)-ant(b))||cur(b)-cur(a);};
+  return function(a,b){return cur(b)-cur(a);};
+}
+function rotOrd(){
+  return st.ord==='var'?' · <span class="chip">por gap, maiores ganhos primeiro</span>':
+         st.ord==='perda'?' · <span class="chip out">por gap, maiores perdas primeiro</span>':'';
+}
+/* coluna de gap: métrica escolhida em destaque, a outra embaixo; verde ganho, vermelho perda */
+function fmtGap(n,emRs,cheio){
+  var v=Math.abs(n),s=n>0?'+':n<0?'−':'';
+  if(!Math.round(v))return '0';
+  return s+(emRs?'R$ '+(cheio?fmt(v):fmtK(v)):(cheio?fmt(v):fmtK(v))+' un');
+}
+function celGap(c,a,c2,a2){
+  var g=c-a,g2=c2-a2,emRs=st.met==='rs';
+  return '<div class="g '+(Math.round(g)>0?'pos':Math.round(g)<0?'neg':'zero')+'">'+
+    '<div class="gv">'+fmtGap(g,emRs,true)+'</div><div class="gu">'+fmtGap(g2,!emRs,false)+'</div></div>';
+}
+/* botão único de gap: o primeiro clique ordena pelos maiores ganhos, o seguinte inverte */
+function pintaOrd(){
+  var gap=porGap();
+  [].forEach.call($('ord').querySelectorAll('button'),function(b){
+    b.classList.toggle('on',b.dataset.o==='c'?st.ord==='c':gap);});
+  var b=$('ordGap');
+  b.classList.toggle('asc',st.ord==='perda');
+  b.querySelector('.osub').textContent=st.ord==='perda'?'maiores perdas':'maiores ganhos';
+  b.title=st.ord==='perda'?'Clique para ver os maiores ganhos primeiro':'Clique para ver as maiores perdas primeiro';
+}
 function setLine(i){return i<0?'<em>sem setor</em>':esc(pessoa(i));}
 function renderFar(){
   var L=R.list,ate=Math.min(st.n,L.length);
   $('note').innerHTML='<b>'+fmt(L.length)+'</b> farmácias · <b>'+rsK(R.totalC)+'</b> '+periodoTexto()+' ('+
     vr(R.totalC,R.totalA)+' contra o mesmo período de '+anoAnt()+')'+
-    ' · <span class="chip gray">'+rotulo()+'</span>'+(st.marcas.size?' · <span class="chip">só '+esc(rotMarcas())+'</span>':'')+chipPV();
+    ' · <span class="chip gray">'+rotulo()+'</span>'+(st.marcas.size?' · <span class="chip">só '+esc(rotMarcas())+'</span>':'')+chipPV()+rotRecorte()+rotOrd();
   if(!L.length){
     var msg=R.baseN?
       fmt(R.baseN)+' farmácia'+(R.baseN>1?'s batem':' bate')+' com a busca, mas nenhuma compra pelos provedores marcados.<br>'+
@@ -769,8 +898,7 @@ function renderFar(){
        '<div class="v">'+celVal(R.totC[i],R.totA[i])+
        (tp>=0?'<div class="topp" title="Principal provedor da loja"><div class="tpn">'+esc(D.prov[tp])+'</div>'+
          '<div class="tpv">'+rsK(R.topV[i])+' · '+pct(tpart)+' da loja</div></div>':'')+
-       (st.ord==='var'?'<div class="sm"><span class="chip'+(inc>=0?'':' out')+'">'+sinal(inc)+'</span></div>':'')+
-       '</div></div>';
+       '</div>'+celGap(R.totC[i],R.totA[i],R.totC2[i],R.totA2[i])+'</div>';
   }
   h+='</div>';
   if(ate<L.length)h+='<div class="more"><button class="btn" onclick="mais()">Ver mais 60</button></div>';
@@ -782,9 +910,10 @@ var PST=null;
 function outrosProv(i,tp){
   if(tp<0)return '<em>sem compra</em>';
   if(R.nProv[i]<=1)return '<em>compra só por este provedor</em>';
-  var okM=filtroMarca(),fc=st.met==='rs'?F.c:F.uc,v={},k;
+  var okM=filtroMarca(),fv=filtroVenda(),fc=st.met==='rs'?F.c:F.uc,v={},k;
   for(k=PST[i];k<PST[i+1];k++){
     if(!okM(F.mr[k]))continue;
+    if(fv&&!fv(i,F.mr[k]))continue;
     var p=F.pr[k];if(p===tp)continue;v[p]=(v[p]||0)+fc[k];}
   var ks=Object.keys(v).map(Number).sort(function(a,b){return v[b]-v[a];});
   var mostra=ks.slice(0,2).map(function(p){return esc(D.prov[p]);}).join(', ');
@@ -794,35 +923,36 @@ function outrosProv(i,tp){
 /* ---------- provedores ---------- */
 function renderProv(){
   if(st.drill>=0)return renderDrill();
-  var idx=[];for(var i=0;i<D.prov.length;i++)if(R.provC[i])idx.push(i);
-  idx.sort(function(a,b){return R.provC[b]-R.provC[a];});
+  var idx=[];for(var i=0;i<D.prov.length;i++)if(R.provC[i]||R.provA[i])idx.push(i);
+  idx.sort(cmpOrd(function(p){return R.provC[p];},function(p){return R.provA[p];}));
   var redes=R.ytdTot-R.grupoC-R.distTot,part=[];
-  part.push('grupo <b>'+rsK(R.grupoC)+'</b>');
-  if(R.distTot)part.push('outras distribuidoras <b>'+rsK(R.distTot)+'</b>');
+  if(R.distTot)part.push('distribuidoras <b>'+rsK(R.distTot)+'</b>');
   if(Math.round(redes))part.push('redes e CDs <b>'+rsK(redes)+'</b>');
   $('note').innerHTML='<b>'+idx.length+'</b> provedores · '+part.join(' · ')+
-    '. Toque para ver os maiores clientes.';
+    '. Toque para ver os clientes.'+rotRecorte()+rotOrd();
   var h='<div class="list">'+cabPer(null,'Provedor');
   idx.forEach(function(p,x){
     h+='<div class="row" onclick="abrirProv('+p+')"><div class="n">'+(x+1)+'</div><div class="main">'+
-       '<div class="t">'+esc(D.prov[p])+' <span class="chip'+(CLS[p]===0?'':' gray')+'">'+CLSNOME[CLS[p]]+'</span></div>'+
+       '<div class="t">'+esc(D.prov[p])+' <span class="chip gray">'+CLSNOME[CLS[p]]+'</span></div>'+
        '<div class="s">'+fmt(R.provN[p])+' farmácias · '+pct(R.ytdTot?R.provC[p]/R.ytdTot:0)+' do recorte</div></div>'+
-       '<div class="v">'+celVal(R.provC[p],R.provA[p])+'</div></div>';
+       '<div class="v">'+celVal(R.provC[p],R.provA[p])+'</div>'+celGap(R.provC[p],R.provA[p],R.provC2[p],R.provA2[p])+'</div>';
   });
   $('view').innerHTML=h+'</div>';
 }
 function abrirProv(p){st.drill=p;st.cli=-1;st.n=SHOW;renderProv();}
 function voltar(){st.drill=-1;st.cli=-1;st.n=SHOW;renderProv();}
 function dadosDrill(p){
-  var cli={},mar={},tc=0,ta=0,okM=filtroMarca();
+  var cli={},mar={},tc=0,ta=0,okM=filtroMarca(),fv=filtroVenda();
   var pi=F.pi,pr=F.pr,mr=F.mr,fa=st.met==='rs'?F.a:F.ua,fc=st.met==='rs'?F.c:F.uc;
+  var fa2=st.met==='rs'?F.ua:F.a,fc2=st.met==='rs'?F.uc:F.c;
   for(var k=0;k<NF;k++){
     if(pr[k]!==p)continue;
     var i=pi[k];if(!R.base[i])continue;
     if(!okM(mr[k]))continue;
+    if(fv&&!fv(i,mr[k]))continue;
     var c=fc[k];
-    if(!cli[i])cli[i]={c:0,a:0,m:{}};
-    cli[i].c+=c;cli[i].a+=fa[k];
+    if(!cli[i])cli[i]={c:0,a:0,c2:0,a2:0,m:{}};
+    cli[i].c+=c;cli[i].a+=fa[k];cli[i].c2+=fc2[k];cli[i].a2+=fa2[k];
     var mm=cli[i].m,e=mm[mr[k]]||(mm[mr[k]]={c:0,a:0});
     e.c+=c;e.a+=fa[k];
     mar[mr[k]]=(mar[mr[k]]||0)+c;tc+=c;ta+=fa[k];
@@ -832,14 +962,14 @@ function dadosDrill(p){
 function renderDrill(){
   var p=st.drill,d=dadosDrill(p);
   window.__drill={p:p,d:d};
-  var keys=Object.keys(d.cli).map(Number).sort(function(a,b){return d.cli[b].c-d.cli[a].c;});
+  var keys=Object.keys(d.cli).map(Number).sort(cmpOrd(function(i){return d.cli[i].c;},function(i){return d.cli[i].a;}));
   var ms=Object.keys(d.mar).map(Number).sort(function(a,b){return d.mar[b]-d.mar[a];}).slice(0,15);
   $('note').innerHTML='';
   var h='<button class="back" onclick="voltar()">← Todos os provedores</button>'+
     '<h2 class="hd">'+esc(D.prov[p])+'</h2>'+
-    '<div class="hdsub"><span class="chip'+(CLS[p]===0?'':' gray')+'">'+CLSNOME[CLS[p]]+'</span> &nbsp; '+
+    '<div class="hdsub"><span class="chip gray">'+CLSNOME[CLS[p]]+'</span> &nbsp; '+
     rs(d.tc)+' '+periodoTexto()+' ('+vr(d.tc,d.ta)+') · '+fmt(keys.length)+' farmácias compram por aqui</div>'+
-    '<div class="split"><div><div class="cap">Maiores clientes</div><div class="list">'+cabPer(null,'Farmácia');
+    '<div class="split"><div><div class="cap">'+(st.ord==='var'?'Clientes com maior gap positivo':st.ord==='perda'?'Clientes com maior gap negativo':'Maiores clientes')+'</div><div class="list">'+cabPer(null,'Farmácia');
   var ate=Math.min(st.n,keys.length);
   for(var x=0;x<ate;x++){
     var i=keys[x],r=D.pdv[i],share=R.ytdC[i]?d.cli[i].c/R.ytdC[i]:0;
@@ -847,7 +977,8 @@ function renderDrill(){
        '<div class="t">'+esc(r[0])+'</div><div class="s">'+esc(D.cid[r[2]])+' / '+D.uf[r[3]]+
        ' &nbsp;·&nbsp; '+setLine(r[5])+' &nbsp;/&nbsp; '+setLine(r[6])+'</div></div>'+
        '<div class="v">'+celVal(d.cli[i].c,d.cli[i].a)+
-       '<div class="sm"><span class="chip">'+pct(share)+' do que a loja compra</span></div></div></div>';
+       '<div class="sm"><span class="chip">'+pct(share)+' do que a loja compra</span></div></div>'+
+       celGap(d.cli[i].c,d.cli[i].a,d.cli[i].c2,d.cli[i].a2)+'</div>';
   }
   h+='</div>';
   if(ate<keys.length)h+='<div class="more"><button class="btn" onclick="mais2()">Ver mais 60</button></div>';
@@ -880,20 +1011,30 @@ function mais2(){st.n+=60;renderDrill();}
 /* ---------- setores ---------- */
 function renderSet(){
   var idx=[];for(var i=0;i<D.set.length;i++)if(R.setC[i]||R.setA[i])idx.push(i);
-  idx.sort(function(a,b){return R.setC[b]-R.setC[a];});
-  $('note').innerHTML='Carteira de cada vendedor no recorte. Cada venda entra na linha da marca. Toque para ver as farmácias do setor.';
+  idx.sort(cmpOrd(function(s){return R.setC[s];},function(s){return R.setA[s];}));
+  $('note').innerHTML='Carteira de cada vendedor no recorte. Cada venda entra na linha da marca. Toque para ver as farmácias do setor.'+rotOrd();
   var h='<div class="list">'+cabPer(null,'Setor e vendedor');
   idx.forEach(function(s,x){
     h+='<div class="row" onclick="verSetor('+s+')"><div class="n">'+(x+1)+'</div><div class="main">'+
        '<div class="t">'+esc(pessoa(s))+' <span class="chip gray">'+(D.setM[s][1]?'Infinity':'Prime')+'</span></div>'+
        '<div class="s">'+cod(s)+' · distrital '+esc(distDe(s))+' · '+fmt(R.setN[s])+' farmácias</div></div>'+
-       '<div class="v">'+celVal(R.setC[s],R.setA[s])+
-       '<div class="sm"><span class="chip'+(R.setC[s]>=R.setA[s]?'':' out')+'">'+sinal(R.setC[s]-R.setA[s])+'</span></div></div></div>';
+       '<div class="v">'+celVal(R.setC[s],R.setA[s])+'</div>'+celGap(R.setC[s],R.setA[s],R.setC2[s],R.setA2[s])+'</div>';
   });
   $('view').innerHTML=h+'</div>';
 }
+/* lista de setores da lateral: só os da distrital escolhida */
+function montarSetores(){
+  var ss=[];
+  D.set.forEach(function(s,ix){
+    if(st.dist>=0&&D.setM[ix][0]!==st.dist)return;
+    ss.push({v:ix,l:s.slice(0,6)+' · '+s.slice(9).trim()+(D.setM[ix][1]?' (Infinity)':' (Prime)')});});
+  ss.sort(function(a,b){return a.l<b.l?-1:1;});
+  var h='<option value="">Todos os setores</option>';
+  ss.forEach(function(o){h+='<option value="'+o.v+'"'+(o.v===st.setor?' selected':'')+'>'+esc(o.l)+'</option>';});
+  $('fsetor').innerHTML=h;
+}
 function verSetor(s){
-  st.setor=s;$('fsetor').value=String(s);st.tab='far';st.n=SHOW;st.drill=-1;
+  st.setor=s;st.dist=D.setM[s][0];$('fdist').value=String(st.dist);montarSetores();$('fsetor').value=String(s);st.tab='far';st.n=SHOW;st.drill=-1;
   [].forEach.call($('tabs').children,function(x){x.classList.toggle('on',x.dataset.t==='far');});
   $('ord').style.display='';render();
 }
@@ -906,11 +1047,12 @@ function abrirPdv(i){
   var pi=F.pi,pr=F.pr,mr=F.mr;
   /* a ficha segue o filtro de Linha da lateral, igual a lista: com Prime marcado, so entram
      as marcas Prime (antes a ficha somava as duas linhas mesmo com o filtro ligado) */
-  var lmk=(st.linha==='')?null:+st.linha,okM=filtroMarca();
+  var lmk=(st.linha==='')?null:+st.linha,okM=filtroMarca(),fv=filtroVenda();
   for(var k=0;k<NF;k++){
     if(pi[k]!==i)continue;
     var p=pr[k],m=mr[k];
     if(!okM(m))continue;
+    if(fv&&!fv(i,m))continue;
     var e=acc(provs,p);e.c+=F.c[k];e.a+=F.a[k];e.uc+=F.uc[k];e.ua+=F.ua[k];
     var g=acc(marsAll,m);g.c+=F.c[k];g.a+=F.a[k];g.uc+=F.uc[k];g.ua+=F.ua[k];
     if(!marsBy[p])marsBy[p]={};
@@ -921,7 +1063,7 @@ function abrirPdv(i){
   $('dwh').innerHTML='<div><h2>'+esc(r[0])+'</h2><div style="color:var(--ink2);font-size:13.5px;margin-top:3px">'+
     esc(r[1]?r[1]+' · ':'')+esc(D.cid[r[2]])+' / '+D.uf[r[3]]+' · '+esc(D.band[r[4]])+
     (lmk!==null?' <span class="chip">só linha '+(lmk?'Infinity':'Prime')+'</span>':'')+
-    (st.marcas.size?' <span class="chip">só '+esc(rotMarcas())+'</span>':'')+'</div>'+
+    (st.marcas.size?' <span class="chip">só '+esc(rotMarcas())+'</span>':'')+rotRecorte().replace(' · ',' ')+'</div>'+
     '<div class="cnpj"><span>'+(/^\d{14}$/.test(r[7])?'CNPJ ':'Código ')+esc(cnpjFmt(r[7]))+'</span>'+
     '<button onclick="copiar(\''+esc(r[7])+'\',this)">copiar</button></div></div>';
   renderFicha();
@@ -960,14 +1102,15 @@ function copiar(c,el){
 function money(v){return 'R$ '+fmt(v);}
 function unid(v){return fmt(v)+' un';}
 function renderFicha(){
-  var i=DW.i,r=D.pdv[i],geral=totalDe(-1),grupo=totalDe(-2);
+  var i=DW.i,r=D.pdv[i],geral=totalDe(-1),top=-1,tv=0;
+  for(var pp in DW.provs)if(DW.provs[pp].c>tv){tv=DW.provs[pp].c;top=+pp;}
   var h='<div class="facts">'+
     '<div class="fact"><div class="k">Compra '+rotPeriodo()+'</div><div class="v num">'+money(geral.c)+
       ' <span style="font-size:13px;font-weight:400">'+vr(geral.c,geral.a)+'</span>'+
       '<br><span style="font-size:12.5px;font-weight:400;color:var(--ink3)">'+unid(geral.uc)+' '+vr(geral.uc,geral.ua)+'</span></div></div>'+
-    '<div class="fact"><div class="k">Pelo grupo</div><div class="v num">'+pct(geral.c?grupo.c/geral.c:0)+
-      ' <span style="font-size:13px;font-weight:400">('+money(grupo.c)+')</span>'+
-      '<br><span style="font-size:12.5px;font-weight:400;color:var(--ink3)">'+pct(geral.uc?grupo.uc/geral.uc:0)+' das unidades</span></div></div>'+
+    '<div class="fact"><div class="k">Principal provedor</div><div class="v" style="font-size:14px">'+
+      (top<0?'<em style="color:var(--ink3)">sem compra</em>':esc(D.prov[top])+
+      '<br><span class="num" style="font-weight:400;font-size:12px;color:var(--ink3)">'+pct(geral.c?tv/geral.c:0)+' da compra · '+money(tv)+'</span>')+'</div></div>'+
     '<div class="fact"><div class="k">Setor Prime</div><div class="v" style="font-size:14px">'+
       (r[5]<0?'<em style="color:var(--ink3)">sem setor</em>':esc(pessoa(r[5]))+'<br><span style="font-weight:400;font-size:12px;color:var(--ink3)">'+cod(r[5])+' · '+esc(distDe(r[5]))+'</span>')+'</div></div>'+
     '<div class="fact"><div class="k">Setor Infinity</div><div class="v" style="font-size:14px">'+
@@ -984,18 +1127,13 @@ function renderFicha(){
       (ab?tabelaMarcas(id):'');
   }
   var pk=Object.keys(DW.provs).map(Number);
-  var gsel=pk.filter(function(p){return CLS[p]===0;});
-  var ativos=gsel.filter(function(p){return DW.provs[p].c||DW.provs[p].uc;});
   h+='<div class="cap">De onde vem a compra <span>— toque para abrir</span></div>';
   h+=linhaProv(-1,'Todos os provedores',pk.length+' provedores',geral,false);
-  [0,1,2].forEach(function(c){
+  [1,2].forEach(function(c){
     var lista=pk.filter(function(p){return CLS[p]===c;});
     if(!lista.length)return;
     lista.sort(function(a,b){return DW.provs[b].c-DW.provs[a].c;});
-    h+='<div class="pgrp">'+['Grupo Santa Cruz','Distribuidoras concorrentes','Redes e CDs próprios'][c]+'</div>';
-    if(c===0&&ativos.length>1)
-      h+=linhaProv(-2,'Todo o grupo <span class="chip">somado</span>',
-        pct(geral.c?grupo.c/geral.c:0)+' da compra da loja',grupo,true);
+    h+='<div class="pgrp">'+['','Distribuidoras','Redes e CDs próprios'][c]+'</div>';
     lista.forEach(function(p){
       var v=DW.provs[p];
       var sub=v.c>0?pct(geral.c?v.c/geral.c:0)+' da compra da loja':'sem compra neste ano';
@@ -1009,25 +1147,26 @@ var MSHOW=8;
 function tabelaMarcas(sel){
   var mm=somaMarcas(sel),tt=totalDe(sel);
   var mk=Object.keys(mm).map(Number);
-  var key=DW.sort==='rs'?'c':'uc';
-  mk.sort(function(a,b){return (mm[b][key]-mm[a][key])*(DW.dir<0?1:-1);});
+  /* ordena por valor ou pelo gap (atual menos ano anterior), em R$ ou unidades */
+  var val=function(v){return DW.sort==='rs'?v.c:DW.sort==='un'?v.uc:DW.sort==='grs'?v.c-v.a:v.uc-v.ua;};
+  mk.sort(function(a,b){return (val(mm[b])-val(mm[a]))*(DW.dir<0?1:-1);});
   var lim=DW.all?mk.length:Math.min(mk.length,MSHOW);
+  function cab(k,rot){return '<button class="'+(DW.sort===k?'on':'')+'" onclick="ordFicha(\''+k+'\')">'+rot+(DW.sort===k?(DW.dir<0?' \u25bc':' \u25b2'):'')+'</button>';}
+  function gcel(g,emRs){var r=Math.round(g);return '<span class="gp'+(r>0?' pos':r<0?' neg':'')+'">'+fmtGap(g,emRs,true)+'</span>';}
   var h='<div class="mbox" onclick="event.stopPropagation()">'+
-    '<div class="mhead"><span>Marca ('+mk.length+')</span>'+
-    '<button class="'+(DW.sort==='rs'?'on':'')+'" onclick="ordFicha(\'rs\')">R$'+(DW.sort==='rs'?(DW.dir<0?' \u25bc':' \u25b2'):'')+'</button>'+
-    '<button class="'+(DW.sort==='un'?'on':'')+'" onclick="ordFicha(\'un\')">Unid.'+(DW.sort==='un'?(DW.dir<0?' \u25bc':' \u25b2'):'')+'</button></div>';
-  if(!mk.length)h+='<div class="mrow"><span style="color:var(--ink3)">Sem compra por aqui.</span><span></span><span></span></div>';
+    '<div class="mhead"><span>Marca ('+mk.length+')</span>'+cab('rs','R$')+cab('grs','Gap R$')+cab('un','Unid.')+cab('gun','Gap un')+'</div>';
+  if(!mk.length)h+='<div class="mrow"><span style="color:var(--ink3)">Sem compra por aqui.</span><span></span><span></span><span></span><span></span></div>';
   for(var x=0;x<lim;x++){
     var m=mk[x],v=mm[m];
     h+='<div class="mrow"><span>'+esc(D.mar[m])+' <span class="chip gray">'+(D.marL[m]?'Infinity':'Prime')+'</span></span>'+
-       '<span class="r"><span>'+money(v.c)+'</span><em>'+vr(v.c,v.a)+'</em></span>'+
-       '<span class="r"><span>'+unid(v.uc)+'</span><em>'+vr(v.uc,v.ua)+'</em></span></div>';
+       '<span class="r"><span>'+money(v.c)+'</span><em>'+vr(v.c,v.a)+'</em></span>'+gcel(v.c-v.a,true)+
+       '<span class="r"><span>'+unid(v.uc)+'</span><em>'+vr(v.uc,v.ua)+'</em></span>'+gcel(v.uc-v.ua,false)+'</div>';
   }
   if(mk.length>lim)h+='<div class="mmore"><button onclick="verTodasMarcas()">ver as outras '+(mk.length-lim)+' marcas</button></div>';
   else if(DW.all&&mk.length>MSHOW)h+='<div class="mmore"><button onclick="verTodasMarcas()">mostrar só as '+MSHOW+' maiores</button></div>';
   h+='<div class="mrow" style="border-bottom:0;font-weight:600;padding-top:9px">'+
-     '<span>Total</span><span class="r"><span>'+money(tt.c)+'</span><em></em></span>'+
-     '<span class="r"><span>'+unid(tt.uc)+'</span><em></em></span></div>';
+     '<span>Total</span><span class="r"><span>'+money(tt.c)+'</span><em>'+vr(tt.c,tt.a)+'</em></span>'+gcel(tt.c-tt.a,true)+
+     '<span class="r"><span>'+unid(tt.uc)+'</span><em>'+vr(tt.uc,tt.ua)+'</em></span>'+gcel(tt.uc-tt.ua,false)+'</div>';
   return h+'</div>';
 }
 function verTodasMarcas(){DW.all=!DW.all;renderFicha();}
@@ -1048,8 +1187,6 @@ function fechar(){$('dw').classList.remove('on');$('bd').classList.remove('on');
 function rotulo(){
   var U=universo().length;
   if(st.sel.size===U)return st.uni==='dist'?'só distribuidoras':'todos os provedores';
-  var so=true;for(var i=0;i<D.prov.length;i++)if(st.sel.has(i)&&CLS[i]!==0)so=false;
-  if(so&&st.sel.size)return 'só Grupo Santa Cruz';
   return st.sel.size+' provedores marcados';
 }
 function universo(){
@@ -1061,7 +1198,7 @@ function drawProv(){
   var U=universo(),g=[[],[],[]],i;
   U.forEach(function(p){g[CLS[p]].push(p);});
   var h='';
-  ['Grupo Santa Cruz','Outras distribuidoras','Redes e CDs próprios'].forEach(function(t,c){
+  ['','Distribuidoras','Redes e CDs próprios'].forEach(function(t,c){
     if(!g[c].length)return;
     g[c].sort(function(a,b){return R.provC[b]-R.provC[a]||(D.prov[a]<D.prov[b]?-1:1);});
     h+='<div class="grp">'+t+'</div>';
@@ -1073,7 +1210,7 @@ function drawProv(){
   $('fprov').innerHTML=h;
   $('uniHint').textContent=st.uni==='dist'?
     'Fora da conta: São João, Panvel, Raia, Clamed, Nissei e os demais CDs de rede.':
-    'Inclui os CDs próprios das redes, que não se disputa na feira.';
+    'Inclui os CDs próprios das redes.';
   $('provHint').textContent=st.sel.size===U.length?
     'Contando os '+U.length+' provedores acima.':
     'Contando só os '+st.sel.size+' marcados.';
@@ -1131,7 +1268,6 @@ function preset(kind){
   var U=universo();
   st.sel.clear();
   if(kind==='all')U.forEach(function(p){st.sel.add(p);});
-  if(kind==='grupo')U.forEach(function(p){if(CLS[p]===0)st.sel.add(p);});
   st.n=SHOW;st.drill=-1;render();drawProv();drawMar();
 }
 function setUni(u){
@@ -1154,37 +1290,37 @@ function baixar(){
   var rows,i;
   if(st.tab==='far'){
     rows=[['#','Farmacia','Bairro','Cidade','UF','Bandeira','CNPJ','Setor Prime','Setor Infinity',
-      'Compra '+rotPeriodo()+' ('+un()+')','Mesmo periodo '+anoAnt(),'Pelo grupo','Fora do grupo','Provedor principal','Compra no principal','% principal','Qtd provedores']];
+      'Compra '+rotPeriodo()+' ('+un()+')','Mesmo periodo '+anoAnt(),'Gap','Provedor principal','Compra no principal','% principal','Qtd provedores']];
     R.list.forEach(function(p,x){var r=D.pdv[p];
       rows.push([x+1,r[0],r[1],D.cid[r[2]],D.uf[r[3]],D.band[r[4]],r[7],
         r[5]<0?'':D.set[r[5]],r[6]<0?'':D.set[r[6]],Math.round(R.totC[p]),Math.round(R.totA[p]),
-        Math.round(R.grpC[p]),Math.round(R.totC[p]-R.grpC[p]),
+        Math.round(R.totC[p]-R.totA[p]),
         R.topP[p]>=0?D.prov[R.topP[p]]:'',Math.round(R.topV[p]),
         (R.ytdC[p]?R.topV[p]/R.ytdC[p]:0).toFixed(4).replace('.',','),R.nProv[p]]);});
-    return csv(rows,'feira_farmacias_'+st.met+(st.marcas.size?'_marcas':'')+'.csv');
+    return csv(rows,'provedores_farmacias_'+st.met+(st.marcas.size?'_marcas':'')+'.csv');
   }
   if(st.tab==='set'){
     rows=[['#','Setor','Codigo','Distrital','Linha','Compra '+rotPeriodo()+' ('+un()+')','Mesmo periodo '+anoAnt(),'Farmacias']];
     var idx=[];for(i=0;i<D.set.length;i++)if(R.setC[i]||R.setA[i])idx.push(i);
-    idx.sort(function(a,b){return R.setC[b]-R.setC[a];});
+    idx.sort(cmpOrd(function(s){return R.setC[s];},function(s){return R.setA[s];}));
     idx.forEach(function(s,x){rows.push([x+1,pessoa(s),cod(s),distDe(s),D.setM[s][1]?'Infinity':'Prime',
       Math.round(R.setC[s]),Math.round(R.setA[s]),R.setN[s]]);});
-    return csv(rows,'feira_setores_'+st.met+'.csv');
+    return csv(rows,'provedores_setores_'+st.met+'.csv');
   }
   if(st.drill>=0&&window.__drill){
-    var o=window.__drill,ks=Object.keys(o.d.cli).map(Number).sort(function(a,b){return o.d.cli[b].c-o.d.cli[a].c;});
+    var o=window.__drill,ks=Object.keys(o.d.cli).map(Number).sort(cmpOrd(function(i){return o.d.cli[i].c;},function(i){return o.d.cli[i].a;}));
     rows=[['#','Farmacia','Cidade','UF','CNPJ','Setor Prime','Setor Infinity','Compra neste provedor ('+un()+')','Mesmo periodo '+anoAnt(),'Total da loja','% aqui']];
     ks.forEach(function(p,x){var r=D.pdv[p];
       rows.push([x+1,r[0],D.cid[r[2]],D.uf[r[3]],r[7],r[5]<0?'':D.set[r[5]],r[6]<0?'':D.set[r[6]],
         Math.round(o.d.cli[p].c),Math.round(o.d.cli[p].a),Math.round(R.ytdC[p]),
         (R.ytdC[p]?o.d.cli[p].c/R.ytdC[p]:0).toFixed(4).replace('.',',')]);});
-    return csv(rows,'feira_clientes_'+D.prov[o.p].replace(/[^A-Za-z0-9]+/g,'_')+'.csv');
+    return csv(rows,'provedores_clientes_'+D.prov[o.p].replace(/[^A-Za-z0-9]+/g,'_')+'.csv');
   }
   rows=[['#','Provedor','Relacao','Compra no ano ('+un()+')','Ano passado','Farmacias']];
-  var ip=[];for(i=0;i<D.prov.length;i++)if(R.provC[i])ip.push(i);
-  ip.sort(function(a,b){return R.provC[b]-R.provC[a];});
+  var ip=[];for(i=0;i<D.prov.length;i++)if(R.provC[i]||R.provA[i])ip.push(i);
+  ip.sort(cmpOrd(function(p){return R.provC[p];},function(p){return R.provA[p];}));
   ip.forEach(function(p,x){rows.push([x+1,D.prov[p],CLSNOME[CLS[p]],Math.round(R.provC[p]),Math.round(R.provA[p]),R.provN[p]]);});
-  csv(rows,'feira_provedores_'+st.met+'.csv');
+  csv(rows,'provedores_provedores_'+st.met+'.csv');
 }
 
 /* ---------- ---------- */
@@ -1213,24 +1349,31 @@ function boot(dados){
   for(var p0=0;p0<NP;p0++)PST[p0+1]+=PST[p0];
   var ph='';for(var mm=1;mm<=12;mm++)ph+='<option value="'+mm+'"'+(mm===MES_FIM?' selected':'')+'>Janeiro a '+MESLONGO[mm-1]+'/'+(ANO_FIM<10?'0':'')+ANO_FIM+'</option>';
   $('fper').innerHTML=ph;
-  /* o seletor só aparece quando nenhum nome de arquivo trouxe o mês */
-  $('perBox').hidden=!!PER_ORIGEM;
-  $('perHint').textContent='Nenhum arquivo traz o mês no nome; confira o período.';
+  /* os arquivos já vêm somados do BI (só "Demanda Anterior" e "Demanda Atual"), então o mês
+     não muda número nenhum: serve só para nomear o período nos títulos. O seletor só aparece
+     quando não há como saber o mês (nem no nome, nem pela data de extração do BI) */
+  $('perBox').hidden=!!PER_ORIGEM||PER_EXT;
+  $('perHint').textContent='Os números já vêm somados do BI; isto só ajusta o nome do período nos títulos.';
   $('fper').addEventListener('change',function(){MES_FIM=+this.value;atualizarSub();render();
     if(DW.i>=0&&$('dw').classList.contains('on'))renderFicha();});
   CLS=new Int8Array(D.prov.length);
   for(var i=0;i<D.prov.length;i++){var n=D.prov[i];
-    CLS[i]=pfx(n,GRUPO_PFX)?0:(pfx(n,DIST_PFX)||D.provB[i]>=10?1:2);}
+    CLS[i]=(pfx(n,DIST_PFX)||D.provB[i]>=10)?1:2;}
   checkbox($('fuf'),D.uf.map(function(u,ix){return {v:ix,l:u};}),st.uf);
-  var ss=D.set.map(function(s,ix){return {v:ix,l:s.slice(0,6)+' · '+s.slice(9).trim()+(D.setM[ix][1]?' (Infinity)':' (Prime)')};});
-  ss.sort(function(a,b){return a.l<b.l?-1:1;});
-  var h='<option value="">Todos os setores</option>';
-  ss.forEach(function(o){h+='<option value="'+o.v+'">'+esc(o.l)+'</option>';});
-  $('fsetor').innerHTML=h;
+  var ds=D.dist.map(function(d,ix){return {v:ix,l:d.slice(0,6)+' · '+d.slice(9).trim()};});
+  ds.sort(function(a,b){return a.l<b.l?-1:1;});
+  var hd='<option value="">Todas as distritais</option>';
+  ds.forEach(function(o){hd+='<option value="'+o.v+'">'+esc(o.l)+'</option>';});
+  $('fdist').innerHTML=hd;
+  montarSetores();
 
   var t;
   $('q').addEventListener('input',function(){clearTimeout(t);t=setTimeout(function(){st.q=$('q').value;st.n=SHOW;st.drill=-1;render();},220);});
   $('fsetor').addEventListener('change',function(){st.setor=this.value===''?-1:+this.value;st.n=SHOW;st.drill=-1;render();});
+  $('fdist').addEventListener('change',function(){
+    st.dist=this.value===''?-1:+this.value;
+    if(st.setor>=0&&st.dist>=0&&D.setM[st.setor][0]!==st.dist)st.setor=-1;
+    montarSetores();st.n=SHOW;st.drill=-1;render();});
   $('met').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;
     st.met=b.dataset.m;st.n=SHOW;
     [].forEach.call(this.children,function(x){x.classList.toggle('on',x===b);});render();drawProv();drawMar();});
@@ -1240,12 +1383,12 @@ function boot(dados){
     [].forEach.call(this.children,function(x){x.classList.toggle('on',x===b);});render();drawProv();drawMar();
     if(DW.i>=0&&$('dw').classList.contains('on')){var sc=$('dwb').scrollTop;abrirPdv(DW.i);$('dwb').scrollTop=sc;}});
   $('ord').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;
-    st.ord=b.dataset.o;st.n=SHOW;
-    [].forEach.call(this.children,function(x){x.classList.toggle('on',x===b);});render();});
+    if(b.dataset.o==='gap')st.ord=(st.ord==='var')?'perda':'var';else st.ord='c';
+    st.n=SHOW;st.cli=-1;pintaOrd();render();});
   $('tabs').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;
     st.tab=b.dataset.t;st.drill=-1;st.n=SHOW;
     [].forEach.call(this.children,function(x){x.classList.toggle('on',x===b);});
-    $('ord').style.display=st.tab==='far'?'':'none';render();});
+    render();});
   $('mpickBtn').addEventListener('click',function(){mpickToggle();});
   $('mpickOk').addEventListener('click',function(){mpickToggle(false);});
   $('fmar').addEventListener('change',function(e){
@@ -1274,16 +1417,15 @@ function boot(dados){
     [].forEach.call(this.children,function(x){x.classList.toggle('on',x===b);});
     setUni(b.dataset.u);});
   $('clear').addEventListener('click',function(){
-    st.uf.clear();st.setor=-1;st.q='';st.linha='';st.ord='c';st.drill=-1;st.n=SHOW;st.uni='dist';st.met='rs';
+    st.uf.clear();st.setor=-1;st.dist=-1;st.q='';st.linha='';st.ord='c';st.drill=-1;st.n=SHOW;st.uni='dist';st.met='rs';
     st.marcas.clear();$('qmar').value='';mpickToggle(false);
     [].forEach.call($('met').children,function(x){x.classList.toggle('on',x.dataset.m==='rs');});
     [].forEach.call($('uni').children,function(x){x.classList.toggle('on',x.dataset.u==='dist');});
     st.sel.clear();universo().forEach(function(p){st.sel.add(p);});
-    $('q').value='';$('fsetor').value='';
+    $('q').value='';$('fdist').value='';montarSetores();$('fsetor').value='';
     [].forEach.call($('fuf').querySelectorAll('input'),function(x){x.checked=false;});
     [].forEach.call($('linha').children,function(x){x.classList.toggle('on',x.dataset.l==='');});
-    [].forEach.call($('ord').children,function(x){x.classList.toggle('on',x.dataset.o==='c');});
-    render();drawProv();drawMar();});
+    pintaOrd();render();drawProv();drawMar();});
   $('railtog').addEventListener('click',function(){
     var ab=document.body.classList.toggle('filtros');
     this.setAttribute('aria-expanded',ab?'true':'false');});
@@ -1378,14 +1520,17 @@ function parseShared(xml){
 }
 
 var RE_ROW=/<row[^>]*?(\/>|>([\s\S]*?)<\/row>)/g;
-var RE_CELL=/<c r="([A-Z]+)\d+"([^>]*?)(\/>|>([\s\S]*?)<\/c>)/g;
+/* o export novo do BI grava as células sem o endereço (<c t="str">) e com tipo "str";
+   sem r="A1" a coluna é a seguinte à anterior */
+var RE_CELL=/<c\b([^>]*?)(\/>|>([\s\S]*?)<\/c>)/g,RE_REF=/\br="([A-Z]+)\d+"/;
 
 function cellsOf(rowXml,ss,out){
   out.length=0;
   RE_CELL.lastIndex=0;
   var m;
   while((m=RE_CELL.exec(rowXml))){
-    var ix=colIx(m[1]),attr=m[2],inner=m[4]||'',v=null;
+    var attr=m[1],inner=m[3]||'',v=null,rf=RE_REF.exec(attr);
+    var ix=rf?colIx(rf[1]):out.length;
     if(inner){
       var t=attr.indexOf('t="s"')>=0?'s':(attr.indexOf('t="inlineStr"')>=0?'i':'n');
       if(t==='i'){
@@ -1504,6 +1649,14 @@ function headerMap(row){
   }
   return h;
 }
+/* os exports do BI abrem com "Filtros aplicados: ..." e uma linha vazia antes do cabeçalho;
+   procura o cabeçalho nas primeiras linhas em vez de supor que é a linha 1 */
+var MAX_PRE=40;
+function achaCab(r,cols){
+  var h=headerMap(r);
+  for(var i=0;i<cols.length;i++)if(h[cols[i]]===undefined)return null;
+  return h;
+}
 function need(h,names,arq){
   for(var i=0;i<names.length;i++)if(h[names[i]]!==undefined)return h[names[i]];
   throw new Error('coluna "'+names[0]+'" não encontrada em '+arq);
@@ -1531,11 +1684,12 @@ async function lerMDTR(file,onProg){
   var cid=new Dict(),uf=new Dict(),band=new Dict(),dist=new Dict(),set=new Dict(),mar=new Dict();
   var setDist=[],setMar=[],marN100=[],marTot=[],smN=new Map();
   var pdvIx=new Map(),pNome=[],pBairro=[],pCid=[],pUf=[],pBand=[],pCnpj=[],pS1=[],pS2=[];
-  var H=null,cDist,cSet,cMar,cBand,cPdv,linhas=0;
+  var H=null,cDist,cSet,cMar,cBand,cPdv,linhas=0,pre=0;
 
   await eachRow(file,function(r){
     if(!H){
-      H=headerMap(r);
+      H=achaCab(r,['distrital','setor','pdv']);
+      if(!H){if(++pre>MAX_PRE)throw new Error('cabeçalho do MDTR não encontrado');return;}
       cDist=need(H,['distrital'],'MDTR');
       cSet=need(H,['setor'],'MDTR');
       cMar=need(H,['marca'],'MDTR');
@@ -1701,11 +1855,12 @@ Grow.prototype.push=function(v){
 };
 
 async function lerProvedores(file,B,prov,provBand,onProg){
-  var H=null,cPdv,cProv,cMar,cAnt,cAtu;
+  var H=null,cPdv,cProv,cMar,cAnt,cAtu,pre=0;
   var pi=new Grow(),pr=new Grow(),mr=new Grow(),va=new Grow(),vc=new Grow(),cBand;
   await eachRow(file,function(r){
     if(!H){
-      H=headerMap(r);
+      H=achaCab(r,['provedor','demanda atual']);
+      if(!H){if(++pre>MAX_PRE)throw new Error('cabeçalho não encontrado em '+file.name);return;}
       cPdv=need(H,['pdv'],file.name);
       cProv=need(H,['provedor'],file.name);
       cMar=need(H,['marca'],file.name);
@@ -1844,14 +1999,23 @@ function aviso(msg,erro){
 
 /* lê só o cabeçalho para descobrir de qual base é o arquivo */
 async function classificar(file){
-  var head=null;
+  var head=null,filtros='',n=0;
   try{
-    await eachRow(file,function(r){head=r.map(function(v){return txt(v).toLowerCase();});return false;});
+    await eachRow(file,function(r){
+      var l=r.map(function(v){return txt(v).toLowerCase();});
+      var t=function(c){return l.indexOf(c)>=0;};
+      if((t('distrital')&&t('setor')&&t('pdv'))||(t('provedor')&&t('demanda anterior'))){head=l;return false;}
+      filtros+=' '+l.join(' ');
+      if(++n>MAX_PRE)return false;
+    });
   }catch(e){throw new Error(file.name+': '+e.message);}
-  if(!head)throw new Error(file.name+': não consegui ler o cabeçalho');
+  if(!head)throw new Error(file.name+': não reconheci as colunas dessa planilha');
   var tem=function(c){return head.indexOf(c)>=0;};
   if(tem('distrital')&&tem('setor')&&tem('pdv'))return 'mdtr';
   if(tem('provedor')&&tem('demanda anterior')){
+    /* a linha "Tipo de Métrica é ..." do export manda; sem ela, vale o nome do arquivo */
+    var mt=/tipo de m[eé]trica [eé]\s*([a-z$]+)/.exec(filtros);
+    if(mt){if(/^unid/.test(mt[1]))return 'un';return 'rs';}
     if(/unid/i.test(file.name))return 'un';
     if(/\br\b|reais|_r_|-r_/i.test(file.name))return 'rs';
     return SLOTS.rs?'un':'rs';
