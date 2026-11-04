@@ -1967,7 +1967,8 @@ Grow.prototype.push=function(v){
 
 /* a base de provedores pode vir em várias partes (o BI exporta no máximo ~150 mil linhas):
    lê todas, e a mesma combinação PDV + provedor + marca que aparecer em mais de uma parte
-   entra uma vez só. Parte com 150 mil linhas ou mais provavelmente foi cortada pelo BI. */
+   entra uma vez só. Parte que para exatamente no teto do BI (~150 mil linhas) provavelmente foi
+   cortada; arquivo empilhado, com muito mais linhas que isso, não é sinalizado. */
 var LIMITE_BI=150000,CORTE=[];
 async function lerProvedores(files,B,prov,provBand,onProg){
   if(!Array.isArray(files))files=[files];
@@ -1976,7 +1977,7 @@ async function lerProvedores(files,B,prov,provBand,onProg){
   for(f=0;f<files.length;f++)tot+=files[f].size||1;
   for(f=0;f<files.length;f++){
     var n=await lerParte(files[f],function(p){return onProg&&onProg((feito+p*(files[f].size||1))/tot);});
-    if(n>=LIMITE_BI)CORTE.push(files[f].name);
+    if(n>=LIMITE_BI&&n<=LIMITE_BI+100)CORTE.push(files[f].name);
     feito+=files[f].size||1;
   }
   return {pi:pi,pr:pr,mr:mr,a:va,c:vc,n:pi.n};
@@ -2154,7 +2155,7 @@ async function classificar(file){
     var mt=/tipo de m[eé]trica [eé]\s*([a-z$]+)/.exec(filtros);
     if(mt){if(/^unid/.test(mt[1]))return 'un';return 'rs';}
     if(/unid/i.test(file.name))return 'un';
-    if(/\br\b|reais|_r_|-r_/i.test(file.name))return 'rs';
+    if(/\br\b|reais|_r_|-r_|ppp/i.test(file.name))return 'rs';
     return SLOTS.rs.length&&!SLOTS.un.length?'un':'rs';
   }
   throw new Error(file.name+': não reconheci as colunas dessa planilha');
