@@ -502,8 +502,8 @@ body:not(.ready) .mast{padding-bottom:9px}
 
 <div id="boot">
 <div class="drop" id="drop">
-  <h2>Carregue as três planilhas</h2>
-  <p class="hint">Arraste os arquivos aqui ou escolha no botão abaixo. Aceita .xlsx e .csv — a ordem não importa, cada arquivo é reconhecido pelas colunas.</p>
+  <h2>Carregue as planilhas</h2>
+  <p class="hint">Arraste os arquivos aqui ou escolha no botão abaixo. Aceita .xlsx e .csv — a ordem não importa, cada arquivo é reconhecido pelas colunas. As bases de provedores podem vir em várias partes (por distrital, UF etc.): arraste todas que elas são juntadas na montagem.</p>
   <div class="slot" id="slot-mdtr">
     <div class="lbl">MDTR · regional, distrital e setor</div>
     <div class="sname">aguardando arquivo</div>
@@ -511,13 +511,13 @@ body:not(.ready) .mast{padding-bottom:9px}
     <div class="prog"><i></i></div>
   </div>
   <div class="slot" id="slot-rs">
-    <div class="lbl">Provedores · valores em R$</div>
+    <div class="lbl">Provedores · valores em R$ (uma ou mais partes)</div>
     <div class="sname">aguardando arquivo</div>
     <div class="ssize"></div>
     <div class="prog"><i></i></div>
   </div>
   <div class="slot" id="slot-un">
-    <div class="lbl">Provedores · unidades</div>
+    <div class="lbl">Provedores · unidades (uma ou mais partes)</div>
     <div class="sname">aguardando arquivo</div>
     <div class="ssize"></div>
     <div class="prog"><i></i></div>
@@ -776,7 +776,9 @@ function atualizarSub(){
   $('sub').textContent=FAT.pdv.toLocaleString('pt-BR')+' PDVs · '+FAT.prov+' provedores · '+
     'faturamento de R$ '+fmtK(FAT.c)+' '+periodoTexto()+'/'+(2000+ANO_FIM)+
     (v===null?'':' ('+(v>=0?'+':'−')+Math.abs(v)+'% vs '+anoAnt()+')')+
-    (PER_ORIGEM||PER_EXT?'':' · mês não veio no nome do arquivo, ajuste o período ao lado');
+    (PER_ORIGEM||PER_EXT?'':' · mês não veio no nome do arquivo, ajuste o período ao lado')+
+    (CORTE.length?' · atenção: '+(CORTE.length===1?'1 parte de provedores chegou':CORTE.length+' partes de provedores chegaram')+
+      ' ao limite de 150 mil linhas do BI e deve estar incompleta ('+CORTE.join(', ')+'); extraia em partes menores':'');
 }
 
 function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
@@ -1608,10 +1610,31 @@ function cellsOf(rowXml,ss,out){
 }
 
 /* percorre as linhas de uma planilha .xlsx sem carregar tudo na memória */
+/* o MDTR por PDV/marca vem com abas dinâmicas na frente (DIN. PPP, DIN. UN) e a base plana
+   em abas ocultas (PPP, UN); quando existem, lê a PPP (ou a UN), senão a primeira aba */
+async function abaPreferida(file,dir){
+  if(!dir['xl/workbook.xml']||!dir['xl/_rels/workbook.xml.rels'])return null;
+  var wb=await streamText(await zipStream(file,dir['xl/workbook.xml'])),
+      rl=await streamText(await zipStream(file,dir['xl/_rels/workbook.xml.rels']));
+  var alvo={},m,re=/<Relationship\b[^>]*>/g;
+  while((m=re.exec(rl))){
+    var id=/\bId="([^"]+)"/.exec(m[0]),tg=/\bTarget="([^"]+)"/.exec(m[0]);
+    if(id&&tg)alvo[id[1]]=tg[1].replace(/^\/?(xl\/)?/,'xl/');
+  }
+  var abas={},rs=/<sheet\b[^>]*>/g;
+  while((m=rs.exec(wb))){
+    var nm=/\bname="([^"]+)"/.exec(m[0]),ri=/\br:id="([^"]+)"/.exec(m[0]);
+    if(nm&&ri&&alvo[ri[1]])abas[unesc(nm[1]).trim().toUpperCase()]=alvo[ri[1]];
+  }
+  var pref=['PPP','UN'];
+  for(var i=0;i<pref.length;i++)if(abas[pref[i]]&&dir[abas[pref[i]]])return abas[pref[i]];
+  return null;
+}
+
 async function eachRowXlsx(file,onRow,onProg){
   var dir=await zipDir(file);
-  var sheetName=null;
-  for(var k in dir){if(/^xl\/worksheets\/sheet\d+\.xml$/.test(k)){sheetName=k;break;}}
+  var sheetName=await abaPreferida(file,dir);
+  if(!sheetName)for(var k in dir){if(/^xl\/worksheets\/sheet\d+\.xml$/.test(k)){sheetName=k;break;}}
   if(!sheetName)throw new Error('planilha não encontrada dentro do arquivo');
   var ss=[];
   if(dir['xl/sharedStrings.xml'])ss=parseShared(await streamText(await zipStream(file,dir['xl/sharedStrings.xml'])));
@@ -1743,19 +1766,24 @@ async function lerMDTR(file,onProg){
   var cid=new Dict(),uf=new Dict(),band=new Dict(),dist=new Dict(),set=new Dict(),mar=new Dict();
   var setDist=[],setMar=[],marN100=[],marTot=[],smN=new Map();
   var pdvIx=new Map(),pNome=[],pBairro=[],pCid=[],pUf=[],pBand=[],pCnpj=[],pS1=[],pS2=[];
-  var H=null,cDist,cSet,cMar,cBand,cPdv,linhas=0,pre=0;
+  var H=null,cDist,cSet,cMar,cBand,cPdv,cCid,cBrick,cTipo,linhas=0,pre=0,plano=false;
 
   await eachRow(file,function(r){
     if(!H){
-      H=achaCab(r,['distrital','setor','pdv']);
+      H=achaCab(r,['distrital','setor','pdv'])||achaCab(r,['cod. gd','setor','pdv']);
       if(!H){if(++pre>MAX_PRE)throw new Error('cabeçalho do MDTR não encontrado');return;}
-      cDist=need(H,['distrital'],'MDTR');
+      plano=H['distrital']===undefined;
+      cDist=need(H,['distrital','cod. gd'],'MDTR');
       cSet=need(H,['setor'],'MDTR');
       cMar=need(H,['marca'],'MDTR');
-      cBand=need(H,['bandeira'],'MDTR');
       cPdv=need(H,['pdv'],'MDTR');
+      if(plano){
+        cCid=need(H,['cidade'],'MDTR');
+        cBrick=H['brick'];cTipo=H['tipo associado'];
+      }else cBand=need(H,['bandeira'],'MDTR');
       return;
     }
+    if(plano){linhaPlana(r);return;}
     var pdvTxt=txt(r[cPdv]);
     if(!pdvTxt)return;
     var p1=pdvTxt.indexOf(' | ');if(p1<0)return;
@@ -1771,10 +1799,33 @@ async function lerMDTR(file,onProg){
         estado=sl>=0?cidUf.slice(sl+3).trim():'';
     cidade=cidade.replace(/^[-\s]+/,''); // PDV sem bairro vem como "- CIDADE / UF"
 
+    registra(cnpj,nome,bairro,cidade,estado,txt(r[cBand]),txt(r[cDist]),r);
+  },onProg);
+
+  /* MDTR plano (COD. GD | TIPO ASSOCIADO | SETOR | CIDADE | BRICK | PDV | MARCA):
+     PDV = "NOME - CNPJ", CIDADE = "CIDADE - UF", o bairro sai do nome do brick e a bandeira
+     vem depois, da base de provedores (coluna Bandeira); sem venda lá, fica o tipo (I, N/I)
+     ou o nome do PDV */
+  function linhaPlana(r){
+    var pdvTxt=txt(r[cPdv]);if(!pdvTxt)return;
+    var cut=pdvTxt.lastIndexOf(' - ');if(cut<0)return;
+    var cnpj=pdvTxt.slice(cut+3).trim(),nome=pdvTxt.slice(0,cut).trim();
+    var cu=txt(r[cCid]),k=cu.lastIndexOf(' - ');
+    var cidade=k>=0?cu.slice(0,k).trim():cu,estado=k>=0?cu.slice(k+3).trim():'';
+    var bairro='';
+    if(cBrick!==undefined){var bk=txt(r[cBrick]),b1=bk.indexOf(' - ');bk=b1>=0?bk.slice(b1+3):bk;
+      var b2=bk.indexOf('_');bairro=(b2>=0?bk.slice(b2+1):bk).trim();}
+    var tipo=cTipo!==undefined?txt(r[cTipo]).toUpperCase():'';
+    var band=(tipo==='I'||tipo==='N/I')?tipo:nome;
+    var gd=txt(r[cDist]);
+    if(/^\d+$/.test(gd))gd=gd+' - Distrital '+gd;
+    registra(cnpj,nome,bairro,cidade,estado,band,gd,r);
+  }
+
+  function registra(cnpj,nome,bairro,cidade,estado,bandTxt,dTxt,r){
     var mi=mar.id(marcaNome(r[cMar]));
     if(marTot.length<=mi){marTot[mi]=0;marN100[mi]=0;}
     marTot[mi]++;
-    var dTxt=txt(r[cDist]);
     if(dTxt.slice(3,6)==='100')marN100[mi]++;
 
     var si=set.id(txt(r[cSet]));
@@ -1785,16 +1836,17 @@ async function lerMDTR(file,onProg){
     if(pi===undefined){
       pi=pNome.length;pdvIx.set(cnpj,pi);
       pNome.push(nome);pBairro.push(bairro);pCid.push(cid.id(cidade));
-      pUf.push(uf.id(estado));pBand.push(band.id(txt(r[cBand])));
+      pUf.push(uf.id(estado));pBand.push(band.id(bandTxt));
       pCnpj.push(cnpj);pS1.push(si);pS2.push(-1);
     }else if(pS1[pi]!==si&&pS2[pi]<0)pS2[pi]=si;
     linhas++;
-  },onProg);
+  }
 
   if(!linhas)throw new Error('nenhuma linha lida do MDTR');
   return {cid:cid,uf:uf,band:band,dist:dist,set:set,mar:mar,setDist:setDist,setMar:setMar,
           marN100:marN100,marTot:marTot,pdvIx:pdvIx,pNome:pNome,pBairro:pBairro,pCid:pCid,
-          pUf:pUf,pBand:pBand,pCnpj:pCnpj,pS1:pS1,pS2:pS2,linhas:linhas,smN:smN};
+          pUf:pUf,pBand:pBand,pCnpj:pCnpj,pS1:pS1,pS2:pS2,linhas:linhas,smN:smN,
+          bandProv:plano?new Uint8Array(pNome.length):null};
 }
 
 /* ---------- linha de cada marca e de cada setor ----------
@@ -1913,9 +1965,24 @@ Grow.prototype.push=function(v){
   this.a[this.n++]=v;
 };
 
-async function lerProvedores(file,B,prov,provBand,onProg){
-  var H=null,cPdv,cProv,cMar,cAnt,cAtu,pre=0;
-  var pi=new Grow(),pr=new Grow(),mr=new Grow(),va=new Grow(),vc=new Grow(),cBand;
+/* a base de provedores pode vir em várias partes (o BI exporta no máximo ~150 mil linhas):
+   lê todas, e a mesma combinação PDV + provedor + marca que aparecer em mais de uma parte
+   entra uma vez só. Parte com 150 mil linhas ou mais provavelmente foi cortada pelo BI. */
+var LIMITE_BI=150000,CORTE=[];
+async function lerProvedores(files,B,prov,provBand,onProg){
+  if(!Array.isArray(files))files=[files];
+  var pi=new Grow(),pr=new Grow(),mr=new Grow(),va=new Grow(),vc=new Grow(),visto=new Set();
+  var tot=0,feito=0,f;
+  for(f=0;f<files.length;f++)tot+=files[f].size||1;
+  for(f=0;f<files.length;f++){
+    var n=await lerParte(files[f],function(p){return onProg&&onProg((feito+p*(files[f].size||1))/tot);});
+    if(n>=LIMITE_BI)CORTE.push(files[f].name);
+    feito+=files[f].size||1;
+  }
+  return {pi:pi,pr:pr,mr:mr,a:va,c:vc,n:pi.n};
+
+  async function lerParte(file,prog){
+  var H=null,cPdv,cProv,cMar,cAnt,cAtu,pre=0,cBand,linhas=0;
   await eachRow(file,function(r){
     if(!H){
       H=achaCab(r,['provedor','demanda atual']);
@@ -1929,18 +1996,26 @@ async function lerProvedores(file,B,prov,provBand,onProg){
       return;
     }
     var s=txt(r[cPdv]);if(!s)return;
+    linhas++;
     var cut=s.lastIndexOf(' - ');if(cut<0)return;
     var cnpj=s.slice(cut+3).trim();
     var ip=B.pdvIx.get(cnpj);
     if(ip===undefined)return;
     var nome=txt(r[cProv]),ipr=prov.id(nome);
     if(!provBand[ipr])provBand[ipr]=new Set();
-    if(cBand!==undefined)provBand[ipr].add(txt(r[cBand]));
+    if(cBand!==undefined){
+      var bn=txt(r[cBand]);provBand[ipr].add(bn);
+      if(B.bandProv&&!B.bandProv[ip]&&bn){B.pBand[ip]=B.band.id(bn);B.bandProv[ip]=1;}
+    }
     var im=B.mar.id(marcaNome(r[cMar]));
+    var chave=(ip*8192+ipr)*8192+im;
+    if(visto.has(chave))return;
+    visto.add(chave);
     pi.push(ip);pr.push(ipr);mr.push(im);
     va.push(num(r[cAnt]));vc.push(num(r[cAtu])); // guarda o valor cheio; o arredondamento fica na exibição
-  },onProg);
-  return {pi:pi,pr:pr,mr:mr,a:va,c:vc,n:pi.n};
+  },prog);
+  return linhas;
+  }
 }
 
 /* junta tudo no formato que o app consome */
@@ -2013,6 +2088,7 @@ function juntarFatos(fRs,fUn,remapMar,prov,provBand){
 }
 
 async function construir(fileMdtr,fileRs,fileUn,prog){
+  CORTE=[];
   prog('mdtr',0);
   var B=await lerMDTR(fileMdtr,function(p){prog('mdtr',p);});
   B.LP=await linhasDoArquivo(B,typeof document!=='undefined'?perguntarLinhaGrupo:null);
@@ -2034,20 +2110,22 @@ if(typeof module!=='undefined')module.exports={construir:construir,eachRow:eachR
 
 /* ============ TELA DE CARGA ============ */
 
-var SLOTS={mdtr:null,rs:null,un:null};
+var SLOTS={mdtr:null,rs:[],un:[]}; // provedores: uma ou mais partes de cada tipo
+function temTudo(){return !!(SLOTS.mdtr&&SLOTS.rs.length&&SLOTS.un.length);}
 var ROTULO={mdtr:'MDTR (regional/distrital/setor)',rs:'Base provedores — R$',un:'Base provedores — unidades'};
 
 function elSlot(k){return document.getElementById('slot-'+k);}
 
 function pintaSlots(){
   ['mdtr','rs','un'].forEach(function(k){
-    var el=elSlot(k),f=SLOTS[k];
-    el.className='slot'+(f?' ok':'');
-    el.querySelector('.sname').textContent=f?f.name:'aguardando arquivo';
-    el.querySelector('.ssize').textContent=f?(f.size/1048576).toFixed(1)+' MB':'';
+    var el=elSlot(k),fs=SLOTS[k]?[].concat(SLOTS[k]):[];
+    var mb=fs.reduce(function(a,f){return a+f.size;},0)/1048576;
+    el.className='slot'+(fs.length?' ok':'');
+    el.querySelector('.sname').textContent=!fs.length?'aguardando arquivo':
+      (fs.length===1?fs[0].name:fs.length+' partes: '+fs.map(function(f){return f.name;}).join(' · '));
+    el.querySelector('.ssize').textContent=fs.length?mb.toFixed(1)+' MB':'';
   });
-  var pronto=SLOTS.mdtr&&SLOTS.rs&&SLOTS.un;
-  document.getElementById('go').disabled=!pronto;
+  document.getElementById('go').disabled=!temTudo();
 }
 
 function aviso(msg,erro){
@@ -2063,21 +2141,21 @@ async function classificar(file){
     await eachRow(file,function(r){
       var l=r.map(function(v){return txt(v).toLowerCase();});
       var t=function(c){return l.indexOf(c)>=0;};
-      if((t('distrital')&&t('setor')&&t('pdv'))||(t('provedor')&&t('demanda anterior'))){head=l;return false;}
+      if(((t('distrital')||t('cod. gd'))&&t('setor')&&t('pdv'))||(t('provedor')&&t('demanda anterior'))){head=l;return false;}
       filtros+=' '+l.join(' ');
       if(++n>MAX_PRE)return false;
     });
   }catch(e){throw new Error(file.name+': '+e.message);}
   if(!head)throw new Error(file.name+': não reconheci as colunas dessa planilha');
   var tem=function(c){return head.indexOf(c)>=0;};
-  if(tem('distrital')&&tem('setor')&&tem('pdv'))return 'mdtr';
+  if((tem('distrital')||tem('cod. gd'))&&tem('setor')&&tem('pdv'))return 'mdtr';
   if(tem('provedor')&&tem('demanda anterior')){
     /* a linha "Tipo de Métrica é ..." do export manda; sem ela, vale o nome do arquivo */
     var mt=/tipo de m[eé]trica [eé]\s*([a-z$]+)/.exec(filtros);
     if(mt){if(/^unid/.test(mt[1]))return 'un';return 'rs';}
     if(/unid/i.test(file.name))return 'un';
     if(/\br\b|reais|_r_|-r_/i.test(file.name))return 'rs';
-    return SLOTS.rs?'un':'rs';
+    return SLOTS.rs.length&&!SLOTS.un.length?'un':'rs';
   }
   throw new Error(file.name+': não reconheci as colunas dessa planilha');
 }
@@ -2086,12 +2164,14 @@ async function receber(files){
   aviso('lendo cabeçalhos…');
   for(var i=0;i<files.length;i++){
     try{
-      var k=await classificar(files[i]);
-      SLOTS[k]=files[i];
+      var f=files[i],k=await classificar(f);
+      if(k==='mdtr')SLOTS.mdtr=f;
+      else if(!SLOTS[k].some(function(g){return g.name===f.name&&g.size===f.size&&g.lastModified===f.lastModified;}))
+        SLOTS[k].push(f); // mesma parte arrastada duas vezes entra uma vez só
       pintaSlots();
     }catch(e){aviso(e.message,true);return;}
   }
-  aviso(SLOTS.mdtr&&SLOTS.rs&&SLOTS.un?'tudo pronto — pode montar a base':'');
+  aviso(temTudo()?'tudo pronto: pode montar a base ou arrastar mais partes de provedores':'');
 }
 
 function barra(k,p){
@@ -2104,7 +2184,7 @@ async function montarTudo(){
   document.getElementById('drop').classList.add('busy');
   aviso('montando a base… os arquivos não saem do seu computador');
   try{
-    var per=detectarPeriodo([SLOTS.rs.name,SLOTS.un.name,SLOTS.mdtr.name]);
+    var per=detectarPeriodo(SLOTS.rs.concat(SLOTS.un).map(function(f){return f.name;}).concat([SLOTS.mdtr.name]));
     MES_FIM=per.m;ANO_FIM=per.a;PER_ORIGEM=per.de;
     var dados=await construir(SLOTS.mdtr,SLOTS.rs,SLOTS.un,function(k,p){barra(k,p);});
     /* faturamento total da base (todos os provedores e linhas, sem filtros) no acumulado do ano */
